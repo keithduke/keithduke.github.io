@@ -1,59 +1,266 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <title>Keith Duke</title>
-        <style>
-            .wrapper {
-                display: flex;
-                flex-wrap: wrap;
-            }
-            .main {
-                min-width: 50%;
-                flex-basis: 0;
-                flex-grow: 666;
-                background-image: linear-gradient(rgba(169, 169, 169, 0.2) 0.05em, transparent 0.1em), linear-gradient(90deg, rgba(169, 169, 169, 0.2) 0.05em, transparent 0.1em);
-                background-size: 1.75rem 1.75rem;
-                background-attachment: scroll;
-                background-position: calc(50% - 1.75rem/2) -17px;
-            }
-            .sidebar {
-                flex-basis: 20rem;
-                flex-grow: 1;
-                background-color: aquamarine;
-                margin: 0 10px;
-                background-color: aquamarine;
-                border: 1px white;
-                border-radius: 20px;
-                box-shadow: 0px -1px 24px -4px rgba(0,0,0,0.5);
-            }
-            .nav {
-                width: 100%;
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                line-height: 1.25em;
-                font-size: 1em;
-             }
-            .nav div:first-child {
-                display: flex;
-                background-color: black;
-                color: white;
-                justify-content: center;
-                align-items: center;
-                line-height: 1.5em;
-            }
-            .nav div {
-                background-color: aliceblue;
-                width: 50px;
-                height: 50px;
-            }
-            .nav div:after {
-                content: '\2022';
-            }
-        </style>
-    </head>
-    <body id="home">
-    </body>
+  <head>
+    <title>Keith Duke</title>
+
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="keithdukepwa.webmanifest">
+
+    <!-- Fallback application metadata for legacy browsers -->
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, maximum-scale=5">
+    <meta name="author" content="Keith Duke">
+    <meta name="description" content="The personal website of developer and designer Keith Duke.">
+    <meta property="og:image" content="https://keithduke.net/8colorme.png">
+    <meta property="og:description" content="The personal website of developer and designer Keith Duke.">
+    <meta property="og:title" content="Keith Duke">
+
+    <!-- Windows app TODO this stull needed? -->
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="/favicon/ms-icon-144x144.png">
+    <meta name="theme-color" content="#ffffff">
+
+    <!-- For non-Retina iPhone, iPod Touch, and Android 2.1+ devices: -->
+    <link rel="apple-touch-icon" sizes="57x57" href="/favicon/apple-icon-57x57.png">
+    <!-- For first- and second-generation iPad: -->
+    <link rel="apple-touch-icon" sizes="72x72" href="/favicon/apple-icon-72x72.png">
+    <!-- For iPhone with high-resolution Retina display running iOS ≤ 6: -->
+    <link rel="apple-touch-icon" sizes="114x114" href="/favicon/apple-icon-114x114.png">
+    <!-- For iPhone with high-resolution Retina display running iOS ≥ 7: -->
+    <link rel="apple-touch-icon" sizes="120x120" href="/favicon/apple-icon-120x120.png">
+    <!-- For iPad with high-resolution Retina display running iOS ≤ 6: -->
+    <link rel="apple-touch-icon" sizes="144x144" href="/favicon/apple-icon-144x144.png">
+    <!-- For iPad with high-resolution Retina display running iOS ≥ 7: -->
+    <link rel="apple-touch-icon" sizes="152x152" href="/favicon/apple-icon-152x152.png">
+    <!-- Latest -->
+    <link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-icon-180x180.png">
+
+    <link rel="icon" type="image/png" sizes="192x192"  href="/favicon/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="/favicon/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png">
+    <style>
+      html, body {
+        margin: 0;
+        height:100%;
+        width:100%;
+        padding:0;
+        font-family: Georgia, serif;
+        scroll-behavior: smooth;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+      }
+      h1, h2 {
+        font-family: "Tahoma", sans-serif;
+      }
+      p {
+        font-size: 1.25rem;
+        line-height: 1.75;
+      }
+      a:link{
+        color:black;
+      }
+      a:visited{
+        color:black;
+      }
+      a:hover{
+        color:black;
+      }
+      a:focus{
+        color:black;
+      }
+      a:active{
+        color:blue;
+        top: 2px;
+      }
+      section {
+        display: block;
+        width:100vw;
+      }
+      #me {
+        display:flex;
+        min-height: 100vh;
+        background-color: #fdfaeb;
+        justify-content:center;
+        align-items:center;
+      }
+      #me img {
+        display: block;
+        width: 400px;
+        margin: 0 auto;
+      }
+
+      #about {
+        padding: 10vh 0;
+        background-color: rgba(217, 78, 49);
+      }
+      #about h2 {
+        transform: rotate(90deg) translateY(100%);
+        position: absolute;
+        font-size: 30vh;
+        color: rgba(48, 38, 29, 0.1);
+      }
+      #about p {
+        width: 85%;
+        margin: 0 auto;
+        margin-bottom: 1em;
+        color: #10100f;
+        text-rendering: optimizeLegibility;
+      }
+      #about:last-child {
+        margin-bottom: 0;
+      }
+      #about a {
+        color: #071025;
+      }
+      #about a:visited{
+        color: #071025;
+      }
+      footer {
+        background-color: yellow;
+        width:100%;
+        padding: 5vh 0;
+        position: relative;
+        align-items: center;
+        overflow-y: hidden;
+      }
+      footer a:link{
+        color:black;
+      }
+      footer a:visited{
+        color:black;
+      }
+      footer a:hover{
+        color: black;
+      }
+      footer a:focus{
+        color:white;
+      }
+      footer a:active{
+        color:blue;
+        top: 2px;
+      }
+      footer p {
+        position: relative;
+        z-index: 2;
+        text-align: center;
+        width: 80%;
+        margin: 0 auto;
+        font-family: Arial, sans-serif;
+        padding-bottom: .5em;
+        font-size: 1rem;
+      }
+      .jitter {
+        color: rgba(217, 78, 49, 1);
+        z-index: 2;
+        top: -5%;
+        left: 2%;
+      }
+      .jittery {
+        color: rgba(217, 78, 49);
+        top: 0;
+        transform-origin: left;
+      }
+      .jitter, .jittery {
+        text-rendering: optimizeLegibility;
+        display:inline;
+        position: absolute;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <noscript>
+        <p>This web page doesn't require JavaScript to be enabled, but it is odd you do not have it on.</p>
+        <p><a href="https://goo.gl/koeeaJ" target="_blank" rel="noopener noreferrer">Would you like to enable JavaScript?</a></p>
+      </noscript>
+
+      <section id="me">
+        <!--
+          This is from a self portrait screen print.
+        -->
+        <img src="8colorme.png" alt="A scan of a four color silk screen self portrait of myself on paper.">
+      </section>
+
+      <section id="about">
+        <h2>About</h2>
+
+        <p>Hello, my name is Keith Duke. I am a web developer and designer.</p>
+
+        <p>For the past 10 years I served as a front-end engineer for <a href="https://cbsinteractive.com/about/" target="_blank" rel="noopener noreferrer">CBS Interactive</a>
+        , as both a Lead and Senior on numerous brands. Working with varying technologies, from
+        PHP frameworks like Zend, CodeIgniter and Laravel, Python with Django, Vue along with Nuxt, Sass, BEM, and major CSS
+        frameworks like bootstrap, in a large corporate environment working on major brand name media sites.</p>
+
+        <p>I completed my Bachelor of Arts at the Academy of Art University in San Francisco 
+        where I majored in <a href="https://www.academyart.edu/academics/web-design/" target="_blank" rel="noopener noreferrer">Web Design & New Media</a>, prior 
+        I had completed coursework in <a href="https://mtsu.edu/csc/" target="_blank" rel="noopener noreferrer">Computer Science</a> at Middle Tennessee State University.</p>
+
+        <p>I have a strong background and love for craft, having worked in wood, glass, book, paper and print arts. 
+        I fancy myself a writer, <a href="https://stackoverflow.com/questions/522828/is-code-for-computers-or-for-people" target="_blank" rel="noopener noreferrer">coding
+        is an act of writing to two audiences</a>.</p>
+
+        <p>Advocate of <a href="https://leanweb.dev/ebook/lean-web-principles/" target="_blank" rel="noopener noreferrer">lean web techniques</a> and excited about the evolving <a href="https://developer.mozilla.org/en-US/docs/Web" target="_blank" rel="noopener noreferrer">technologies</a>.
+        This html document is built with core philosophies, and should last for many years.</p>
+
+        <p>View it's source, check the javascript console, print it out, each page has its own unique footer, it can be installed as an app if you want to
+        carry me around on your mobile device. All aspects of this html document have been made with thought and care.</p>
+
+        <p>If you are intested in working together reach out to me on <a href="https://www.linkedin.com/in/keith-duke-8488345/" target="_blank" rel="noopener noreferrer">Linkedin</a>.</p>
+      </section>
+      </div>
+    </main>
+
+    <footer>
+      <h2 id="colophon" class="jitter">Colophon</h2>
+      <p>This website was designed using a <a href="https://getrocketbook.com/" target="_blank" rel="noopener noreferrer">Rocket Book</a> and created with <a href="https://www.vim.org/" target="_blank" rel="noopener noreferrer">Vim</a> to write html, css and javascript. Powered by <a href="https://pages.github.com/" target="_blank" rel="noopener noreferrer">github pages</a>.</p>
+      <p>&#169; 2021 Keith Duke</p>
+    </footer>
+
+    <script>
+      (function() {
+        window._keith = window._keith || [];
+        _keith.push({online: true});
+        console.log('keithduke.net online');
+        // time between head and now
+        console.log('Applying colophon text effect...');
+        const textToEffect = document.getElementById("colophon"); 
+        for(var i=0; i < 15; i++){
+          let textClone = textToEffect.cloneNode(true);
+          textClone.id = `colophon-${i}`;
+          textClone.className = 'jittery';
+          textToEffect.before(textClone);
+        }
+        var elements = document.getElementsByClassName('jittery');
+        for (const item of elements){
+          // apply random effect
+          var oddOrEven = Math.random() < 0.5 ? -1 : 1;
+          var a = oddOrEven * (Math.floor(Math.random() * 100));
+          var b = oddOrEven * (Math.random() * 40);
+          var c = Math.random();
+          item.style.transform = 'rotate(' + a + 'deg) scale('+ b +')';
+          item.style.opacity = c;
+        };
+
+        // TODO PWA changes
+        if('serviceWorker' in navigator) {
+          navigator.serviceWorker.register('/sw.js');
+        };
+
+        // TODO popup on mouseout of browser/before you go message
+        const mouseTarget = document.body;
+
+        mouseTarget.addEventListener('mouseenter', e => {
+          console.log("mouse enter");
+        });
+
+        mouseTarget.addEventListener('mouseleave', e => {
+          console.log("mouse leave");
+        });
+      }());
+    </script>
+  </body>
 </html>
 
