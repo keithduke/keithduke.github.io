@@ -1,4 +1,4 @@
-const cacheName = 'keithdukepwa-v1';
+const cacheName = 'keithdukepwa-v2';
 
 //add favicons
 const appShellFiles = [
