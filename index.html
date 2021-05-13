@@ -3,8 +3,9 @@
   <head>
     <title>Keith Duke</title>
 
-    <!-- PWA Manifest -->
+    <!-- TODO PWA Manifest
     <link rel="manifest" href="keithdukepwa.webmanifest">
+    -->
 
     <!-- Fallback application metadata for legacy browsers -->
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -15,7 +16,7 @@
     <meta property="og:description" content="The personal website of developer and designer Keith Duke.">
     <meta property="og:title" content="Keith Duke">
 
-    <!-- Windows app TODO this stull needed? -->
+    <!-- TODO this stull needed? -->
     <meta name="msapplication-TileColor" content="#ffffff">
     <meta name="msapplication-TileImage" content="/favicon/ms-icon-144x144.png">
     <meta name="theme-color" content="#ffffff">
@@ -46,6 +47,7 @@
         width:100%;
         padding:0;
         font-family: Georgia, serif;
+        font-size: 18px;
         scroll-behavior: smooth;
       }
       * {
@@ -54,10 +56,6 @@
       }
       h1, h2 {
         font-family: "Tahoma", sans-serif;
-      }
-      p {
-        font-size: 1.25rem;
-        line-height: 1.75;
       }
       a:link{
         color:black;
@@ -94,6 +92,7 @@
       }
 
       #about {
+        width: 100vw;
         padding: 10vh 0;
         background-color: rgba(217, 78, 49);
       }
@@ -105,10 +104,15 @@
       }
       #about p {
         width: 85%;
-        margin: 0 auto;
-        margin-bottom: 1em;
+        margin: 0 auto 1em auto;
         color: #10100f;
+        font-size: clamp(100%, 1rem + 1vw, 24px);
+        letter-spacing: -.015em;
+        line-height: 1.5em;
         text-rendering: optimizeLegibility;
+      }
+      #about #intro {
+        font-size: 1.5em;
       }
       #about:last-child {
         margin-bottom: 0;
@@ -116,7 +120,7 @@
       #about a {
         color: #071025;
       }
-      #about a:visited{
+      #about a:visited {
         color: #071025;
       }
       footer {
@@ -128,19 +132,19 @@
         overflow-y: hidden;
         overflow-x: hidden;
       }
-      footer a:link{
+      footer a:link {
         color:black;
       }
-      footer a:visited{
+      footer a:visited {
         color:black;
       }
-      footer a:hover{
+      footer a:hover {
         color: black;
       }
-      footer a:focus{
+      footer a:focus {
         color:white;
       }
-      footer a:active{
+      footer a:active {
         color:blue;
         top: 2px;
       }
@@ -157,7 +161,8 @@
       .jitter {
         color: rgba(217, 78, 49, 1);
         z-index: 2;
-        top: -5%;
+        font-size: 1em;
+        top: -4%;
         left: 2%;
       }
       .jittery {
@@ -173,6 +178,93 @@
     </style>
   </head>
   <body>
+    <main>
+      <noscript>
+        <p>This web page doesn't require JavaScript to be enabled, but it is odd you do not have it on.</p>
+        <p><a href="https://goo.gl/koeeaJ" target="_blank" rel="noopener noreferrer">Would you like to enable JavaScript?</a></p>
+      </noscript>
+
+      <section id="me">
+        <!--
+          This is from a self portrait screen print.
+        -->
+        <img src="8colorme.png" alt="A scan of a four color silk screen self portrait of myself on paper.">
+      </section>
+
+      <section id="about">
+        <h2>About</h2>
+
+        <p id="intro">Hello, my name is Keith Duke. I am a web developer and designer.</p>
+
+        <p>For the past 10 years I served as a front-end engineer for <a href="https://cbsinteractive.com/about/" target="_blank" rel="noopener noreferrer">CBS Interactive</a>
+        , as both a Lead and Senior on numerous brands. Working with varying technologies, from
+        PHP frameworks like Zend, CodeIgniter and Laravel, Python with Django, Vue with Nuxt, Sass, BEM, and major CSS
+        frameworks like bootstrap, in a large corporate environment working on major brand name media sites.</p>
+
+        <p>I completed my Bachelor of Arts in <a href="https://www.academyart.edu/academics/web-design/" target="_blank" rel="noopener noreferrer">Web Design & New Media</a>
+        at the Academy of Art University in San Francisco.
+        I previously had completed coursework in <a href="https://mtsu.edu/csc/" target="_blank" rel="noopener noreferrer">Computer Science</a> at Middle Tennessee State University.
+        I have a strong background and love for craft, having worked in wood, glass, book, paper and print arts. 
+        I fancy myself a writer, <a href="https://stackoverflow.com/questions/522828/is-code-for-computers-or-for-people" target="_blank" rel="noopener noreferrer">coding
+        is an act of writing to two audiences</a>.</p>
+
+        <p>Advocate of lean web development and techniques, excited about the evolving technologies.
+        This html document is built with core philosophies, and should last for many years.
+        View its source, check the javascript console, print it out, each page has its own unique footer, it can be installed as an app if you want to
+        carry me around on your mobile device. All aspects of this html document have been made with thought and care.</p>
+
+        <p>Reach out to me on <a href="https://www.linkedin.com/in/keith-duke-8488345/" target="_blank" rel="noopener noreferrer">Linkedin</a>.</p>
+      </section>
+      </div>
+    </main>
+
+    <footer>
+      <h2 id="colophon" class="jitter">Colophon</h2>
+      <p>This website was designed using a <a href="https://getrocketbook.com/" target="_blank" rel="noopener noreferrer">Rocket Book</a> and created with <a href="https://www.vim.org/" target="_blank" rel="noopener noreferrer">Vim</a> to write html, css and javascript. Powered by <a href="https://pages.github.com/" target="_blank" rel="noopener noreferrer">github pages</a>.</p>
+      <p>&#169; 2021 Keith Duke</p>
+    </footer>
+
+    <script>
+      (function() {
+        window._keith = window._keith || [];
+        _keith.push({online: true});
+        console.log('keithduke.net online');
+        console.log('Applying colophon text effect...');
+        const textToEffect = document.getElementById("colophon"); 
+        for(var i=0; i < 15; i++){
+          let textClone = textToEffect.cloneNode(true);
+          textClone.id = `colophon-${i}`;
+          textClone.className = 'jittery';
+          textToEffect.before(textClone);
+        }
+        var elements = document.getElementsByClassName('jittery');
+        for (const item of elements){
+          // apply random effect
+          var oddOrEven = Math.random() < 0.5 ? -1 : 1;
+          var a = oddOrEven * (Math.floor(Math.random() * 100));
+          var b = oddOrEven * (Math.random() * 40);
+          var c = Math.random();
+          item.style.transform = 'rotate(' + a + 'deg) scale('+ b +')';
+          item.style.opacity = c;
+        };
+
+        // TODO PWA changes
+        /*
+        if('serviceWorker' in navigator) {
+          navigator.serviceWorker.register('/sw.js');
+        };
+        */
+
+        // TODO popup on mouseout of browser/before you go message
+        const mouseTarget = document.body;
+
+        mouseTarget.addEventListener('mouseenter', e => {
+        });
+
+        mouseTarget.addEventListener('mouseleave', e => {
+        });
+      }());
+    </script>
   </body>
 </html>
 
