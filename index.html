@@ -210,7 +210,7 @@
 
     <footer>
       <h2 id="colophon" class="jitter">Colophon</h2>
-      <p>This website was designed using a <a href="https://getrocketbook.com/" target="_blank" rel="noopener noreferrer">Rocket Book</a> and created with <a href="https://www.vim.org/" target="_blank" rel="noopener noreferrer">Vim</a> to write html, css and javascript powered by <a href="https://pages.github.com/" target="_blank" rel="noopener noreferrer">github pages</a>.</p>
+      <p>This website was designed using a <a href="https://getrocketbook.com/" target="_blank" rel="noopener noreferrer">Rocket Book</a> and created with <a href="https://www.vim.org/" target="_blank" rel="noopener noreferrer">Vim</a> to write html, css and javascript powered by <a href="https://pages.github.com/" target="_blank" rel="noopener noreferrer">GitHub Pages</a>.</p>
       <p>&#169; 2021 Keith Duke</p>
     </footer>
 
@@ -218,7 +218,7 @@
       (function() {
         window._keith = window._keith || [];
         _keith.push({online: true});
-        console.log('keithduke.net online');
+        console.log('Online');
         console.log('Applying colophon text effect...');
         const textToEffect = document.getElementById("colophon"); 
         for(var i=0; i < 15; i++){
@@ -229,7 +229,7 @@
         }
         var elements = document.getElementsByClassName('jittery');
         for (const item of elements){
-          // apply random effect
+          // apply random values
           var oddOrEven = Math.random() < 0.5 ? -1 : 1;
           var a = oddOrEven * (Math.floor(Math.random() * 100));
           var b = oddOrEven * (Math.random() * 40);
@@ -237,6 +237,7 @@
           item.style.transform = 'rotate(' + a + 'deg) scale('+ b +')';
           item.style.opacity = c;
         };
+        console.log('Colophon text effect complete.');
 
         // TODO PWA changes
         /*
