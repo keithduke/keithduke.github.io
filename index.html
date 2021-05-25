@@ -222,6 +222,7 @@
         window._keith = window._keith || [];
         _keith.push({online: true});
         console.log('Online');
+
         console.log('Applying colophon text effect...');
         const textToEffect = document.getElementById("colophon"); 
         for(let i=0; i < 15; i++){
@@ -229,17 +230,14 @@
           textClone.id = `colophon-${i}`;
           textClone.className = 'jittery';
           textToEffect.before(textClone);
-        }
-        var elements = document.getElementsByClassName('jittery');
-        for (const item of elements){
           // apply random values
           let oddOrEven = Math.random() < 0.5 ? -1 : 1;
           let a = oddOrEven * (Math.floor(Math.random() * 100));
           let b = oddOrEven * (Math.random() * 40);
           let c = Math.random();
-          item.style.transform = 'rotate(' + a + 'deg) scale('+ b +')';
-          item.style.opacity = c;
-        };
+          textClone.style.transform = 'rotate(' + a + 'deg) scale('+ b +')';
+          textClone.style.opacity = c;
+        }
         console.log('Colophon text effect complete.');
 
         // TODO PWA changes
