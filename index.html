@@ -104,6 +104,8 @@
         color: rgba(48, 38, 29, 0.1);
       }
       #about p {
+        position: relative;
+        z-index: 2;
         width: 85%;
         margin: 0 auto 1em auto;
         color: #10100f;
@@ -236,6 +238,7 @@
           let b = oddOrEven * (Math.random() * 40);
           let c = Math.random();
           textClone.style.transform = 'rotate(' + a + 'deg) scale('+ b +')';
+          textClone.style.textShadow = `${a}px ${b}px ${c}px rgba(217, 78, 49)`;
           textClone.style.opacity = c;
         }
         console.log('Colophon text effect complete.');
