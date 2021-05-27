@@ -160,7 +160,7 @@
         font-family: Arial, sans-serif;
         padding-bottom: 1rem;
         font-size: 1rem;
-        line-height: 1.5rem
+        line-height: 1.5rem;
       }
       .jitter {
         color: rgba(217, 78, 49, 1);
@@ -238,7 +238,6 @@
           let b = oddOrEven * (Math.random() * 40);
           let c = Math.random();
           textClone.style.transform = 'rotate(' + a + 'deg) scale('+ b +')';
-          textClone.style.textShadow = `${a}px ${b}px ${c}px rgba(217, 78, 49)`;
           textClone.style.opacity = c;
         }
         console.log('Colophon text effect complete.');
