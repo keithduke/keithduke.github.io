@@ -96,6 +96,7 @@
       #about h1 {
         width: 85%;
         margin: 0 auto 1em auto;
+        color: #fdfaeb;
       }
       #about h2 {
         transform: rotate(90deg) translateY(100%);
@@ -179,6 +180,38 @@
         display:inline;
         position: absolute;
       }
+      #templateModal {
+        position: fixed;
+        top: 5vw;
+        right: 5vw;
+        width: 20vw;
+        z-index: 100;
+        border: 2px solid #333;
+        border-radius: 3%;
+        background-color: rgba(255, 255, 255, 0.9);
+        text-align: center;
+      }
+      #templateModal button {
+        float: right;
+        cursor: pointer;
+        margin: 1em;
+        padding: .5em;
+        background-color: #333;
+        border: none;
+        color: white;
+        font-family: monospace;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+      }
+      #templateModal aside {
+        clear: both;
+        margin-bottom: 3em;
+      }
+      #templateModal p {
+        font-weight: bolder;
+        font-size: 18px;
+        padding: 1em;
     </style>
   </head>
   <body>
@@ -198,9 +231,9 @@
         <h1>Hello, my name is Keith Duke. I am a web developer and designer.</h1>
 
         <p>For the past 10 years I served as a front-end engineer for <a href="https://cbsinteractive.com/about/" target="_blank" rel="noopener noreferrer">CBS Interactive</a>
-        , as both a Lead and Senior on numerous brands. Working with varying technologies, from
-        PHP frameworks like Zend, CodeIgniter and Laravel, Python with Django, Vue with Nuxt, Sass, BEM, and major CSS
-        frameworks like bootstrap, in a corporate environment working on brand name media sites.</p>
+        , as both a Lead and Senior on numerous brands. Working with varying technologies like
+        PHP frameworks Laravel, CodeIgniter and Zend, Python with Django, Vue with Nuxt, Sass, BEM, and major CSS
+        frameworks like bootstrap.</p>
 
         <p>I completed my Bachelor of Arts in <a href="https://www.academyart.edu/academics/web-design/" target="_blank" rel="noopener noreferrer">Web Design & New Media</a>
         at the Academy of Art University in San Francisco.
@@ -219,14 +252,33 @@
       <p>&#169; 2021 Keith Duke</p>
     </footer>
 
+    <template id="modal">
+      <div id="templateModal">
+        <button onclick="closeModal()">X</button>
+        <aside>
+          <script>
+            function closeModal() {
+              console.log("closed modal");
+              const modal = document.getElementById("templateModal");
+              modal.remove();
+              _state['closedModal'] = true;
+            }
+          </script>
+          <p>Thanks for stopping by!</p>
+        </aside>
+      </div>
+    </template>
+
     <script>
       (function() {
-        window._keith = window._keith || [];
-        _keith.push({online: true});
+        window._state = window._state || {};
+        _state['online'] = true;
         console.log('Online');
+        console.log(_state);
 
         console.log('Applying colophon text effect...');
         const textToEffect = document.getElementById("colophon"); 
+
         for(let i=0; i < 15; i++){
           let textClone = textToEffect.cloneNode(true);
           textClone.id = `colophon-${i}`;
@@ -249,13 +301,25 @@
         };
         */
 
-        // TODO popup on mouseout of browser/before you go message
         const mouseTarget = document.body;
 
+        // TODO anything with this?
+        /*
         mouseTarget.addEventListener('mouseenter', e => {
+          console.log('mouseenter');
         });
+        */
 
+        // On mouse leave, assume they are navigating and show modal
         mouseTarget.addEventListener('mouseleave', e => {
+          if (!_state['shownModal'] === true){
+            console.log("adding modal");
+            const template = document.getElementById("modal");
+            const clone = template.content.cloneNode(true);
+            const container = document.body;
+            container.prepend(clone);
+            _state['shownModal'] = true;
+          }
         });
       }());
     </script>
