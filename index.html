@@ -97,7 +97,7 @@
         width: 85%;
         margin: 0 auto 1em auto;
         color: #fdfaeb;
-        text-shadow: 2px 2px #333;
+        text-shadow: 1px 1px #333;
       }
       #about h2 {
         transform: rotate(90deg) translateY(100%);
@@ -186,6 +186,7 @@
         top: 5vw;
         right: 5vw;
         width: 20vw;
+        min-width: 170px;
         z-index: 100;
         border: 2px solid #333;
         border-radius: 3%;
@@ -239,7 +240,7 @@
         <p>I completed my Bachelor of Arts in <a href="https://www.academyart.edu/academics/web-design/" target="_blank" rel="noopener noreferrer">Web Design & New Media</a>
         at the Academy of Art University in San Francisco.
         I previously completed coursework in <a href="https://mtsu.edu/csc/" target="_blank" rel="noopener noreferrer">Computer Science</a> at Middle Tennessee State University.
-        I have a background and passion for craft having worked in wood, glass, book, paper and print arts. 
+        I have a background in craft having worked with  wood, glass, book, paper and print arts. 
         I fancy myself a writer, <a href="https://stackoverflow.com/questions/522828/is-code-for-computers-or-for-people" target="_blank" rel="noopener noreferrer">coding
         is an act of writing to two audiences</a>.</p>
 
@@ -259,7 +260,7 @@
         <aside>
           <script>
             function closeModal() {
-              console.log("closed modal");
+              console.log("Closed modal");
               const modal = document.getElementById("templateModal");
               modal.remove();
               _state['closedModal'] = true;
@@ -275,12 +276,11 @@
         window._state = window._state || {};
         _state['online'] = true;
         console.log('Online');
-        console.log(_state);
 
         console.log('Applying colophon text effect...');
         const textToEffect = document.getElementById("colophon"); 
 
-        for(let i=0; i < 15; i++){
+        for(let i=0; i <= 15; i++){
           let textClone = textToEffect.cloneNode(true);
           textClone.id = `colophon-${i}`;
           textClone.className = 'jittery';
