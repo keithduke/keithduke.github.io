@@ -5,6 +5,6 @@
 	Location: Nashville, TN
 
 /* SITE */
-	Last update: 2021/05/27
+	Last update: 2021/06/02
 	Doctype: HTML5
 	IDE: Terminal, Vim, Firefox, Photoshop
