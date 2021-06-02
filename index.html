@@ -274,10 +274,7 @@
     <script>
       (function() {
         window._state = window._state || {};
-        _state['online'] = true;
-        console.log('Online');
 
-        console.log('Applying colophon text effect...');
         const textToEffect = document.getElementById("colophon"); 
 
         for(let i=0; i <= 15; i++){
@@ -293,7 +290,7 @@
           textClone.style.transform = 'rotate(' + a + 'deg) scale('+ b +')';
           textClone.style.opacity = c;
         }
-        console.log('Colophon text effect complete.');
+        console.log('Colophon text effect complete');
 
         // TODO PWA changes
         /*
@@ -302,26 +299,24 @@
         };
         */
 
-        const mouseTarget = document.body;
-
-        // TODO anything with this?
-        /*
-        mouseTarget.addEventListener('mouseenter', e => {
-          console.log('mouseenter');
-        });
-        */
-
         // On mouse leave, assume they are navigating and show modal
-        mouseTarget.addEventListener('mouseleave', e => {
+        function showModal() {
+          console.log("Calling show modal");
           if (!_state['shownModal'] === true){
-            console.log("adding modal");
+            console.log("Adding modal");
             const template = document.getElementById("modal");
             const clone = template.content.cloneNode(true);
             const container = document.body;
             container.prepend(clone);
             _state['shownModal'] = true;
+            document.body.removeEventListener('mouseleave', showModal, false);
           }
-        });
+        }
+
+        document.body.addEventListener('mouseleave', showModal, false);
+
+        _state['online'] = true;
+        console.log('Online');
       }());
     </script>
   </body>
