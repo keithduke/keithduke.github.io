@@ -8,7 +8,6 @@ export default class Game extends Phaser.Scene {
   carrots;
   carrotsCollected = 0;
   carrotsCollectedText;
-  swipeDirection;
 
   // TODO Cleanup carrots not picked up, see note in guide
 
@@ -95,12 +94,13 @@ export default class Game extends Phaser.Scene {
     }
 
     // left and right handling swipe then keyboard
-    if (!this.input.activePointer.isDown && !touchingDown){
+    let swipeDirection = "";
+    if (this.input.activePointer.isDown && !touchingDown){
       if(Math.abs(this.input.activePointer.upX - this.input.activePointer.downX) >= 50) {
         if(this.input.activePointer.upX < this.input.activePointer.downX) {
-          this.swipeDirection = "left";
+          swipeDirection = "left";
         } else if(this.input.activePointer.upX > this.input.activePointer.downX) {
-          this.swipeDirection = "right";
+          swipeDirection = "right";
         }
       }
     } else if (this.cursors.left.isDown && !touchingDown){
@@ -110,9 +110,9 @@ export default class Game extends Phaser.Scene {
     } else {
       this.player.setVelocityX(0);
     }
-    if(this.swipeDirection == "left" && !touchingDown){
+    if(swipeDirection == "left" && !touchingDown){
       this.player.setVelocityX(-200);
-    } else if (this.swipeDirection == "right" && !touchingDown){
+    } else if (swipeDirection == "right" && !touchingDown){
       this.player.setVelocityX(200);
     }
 
