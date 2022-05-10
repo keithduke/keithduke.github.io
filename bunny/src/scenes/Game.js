@@ -96,12 +96,10 @@ export default class Game extends Phaser.Scene {
     // left and right handling swipe then keyboard
     let swipeDirection = "";
     if (this.input.activePointer.isDown && !touchingDown){
-      if(Math.abs(this.input.activePointer.upX - this.input.activePointer.downX) >= 50) {
-        if(this.input.activePointer.upX < this.input.activePointer.downX) {
-          swipeDirection = "right";
-        } else if(this.input.activePointer.upX > this.input.activePointer.downX) {
-          swipeDirection = "left";
-        }
+      if(this.input.activePointer.downX < this.player.body.position.x) {
+        swipeDirection = "left";
+      } else if(this.input.activePointer.downX > this.player.body.position.x) {
+        swipeDirection = "right";
       }
     } else if (this.cursors.left.isDown && !touchingDown){
       this.player.setVelocityX(-200);
