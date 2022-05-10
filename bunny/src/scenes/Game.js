@@ -23,7 +23,7 @@ export default class Game extends Phaser.Scene {
     this.cursors = this.input.keyboard.createCursorKeys();
   };
   create(){
-    this.add.image(180, 320, 'background')
+    this.add.image(240, 320, 'background')
       .setScrollFactor(1,0);
 
     this.platforms = this.physics.add.staticGroup();
@@ -40,12 +40,12 @@ export default class Game extends Phaser.Scene {
 
     // score
     const style = { color: '#000', fontSize: 24 };
-    this.carrotsCollectedText = this.add.text(180, 10, 'Carrots: 0', style)
+    this.carrotsCollectedText = this.add.text(240, 10, 'Carrots: 0', style)
       .setScrollFactor(0)
       .setOrigin(0.5, 0);
 
     // add player
-    this.player = this.physics.add.sprite(180, 320, 'bunny-stand').setScale(0.5);
+    this.player = this.physics.add.sprite(240, 320, 'bunny-stand').setScale(0.5);
     this.player.body.checkCollision.up = false;
     this.player.body.checkCollision.left = false;
     this.player.body.checkCollision.right = false;
@@ -59,7 +59,7 @@ export default class Game extends Phaser.Scene {
     this.carrots = this.physics.add.group({
       classType: Carrot
     });
-    this.carrots.get(180, 320, 'carrot');
+    this.carrots.get(240, 320, 'carrot');
     this.physics.add.collider(this.platforms, this.carrots);
     this.physics.add.overlap(
       this.player,
