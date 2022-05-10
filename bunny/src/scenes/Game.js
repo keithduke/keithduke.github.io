@@ -94,6 +94,7 @@ export default class Game extends Phaser.Scene {
     }
 
     // left and right handling swipe then keyboard
+    this.player.setVelocityX(0);
     let swipeDirection = "";
     if (this.input.activePointer.isDown && !touchingDown){
       if(this.input.activePointer.downX < this.player.body.position.x) {
@@ -105,9 +106,8 @@ export default class Game extends Phaser.Scene {
       this.player.setVelocityX(-200);
     } else if (this.cursors.right.isDown && !touchingDown){
       this.player.setVelocityX(200);
-    } else {
-      this.player.setVelocityX(0);
     }
+
     if(swipeDirection == "left" && !touchingDown){
       this.player.setVelocityX(-300);
     } else if (swipeDirection == "right" && !touchingDown){
