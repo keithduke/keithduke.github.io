@@ -94,22 +94,13 @@ export default class Game extends Phaser.Scene {
       this.player.setTexture('bunny-stand');
     }
 
-    // left and right handling keyboard
-    if (this.cursors.left.isDown && !touchingDown){
-      this.player.setVelocityX(-200);
-    } else if (this.cursors.right.isDown && !touchingDown){
-      this.player.setVelocityX(200);
-    } else {
-      this.player.setVelocityX(0);
-    }
-
-    // left and right handling swipe
+    // left and right handling swipe then keyboard
     if (!this.input.activePointer.isDown && !touchingDown){
       if(Math.abs(this.input.activePointer.upX - this.input.activePointer.downX) >= 50) {
         if(this.input.activePointer.upX < this.input.activePointer.downX) {
-          swipeDirection = "up";
+          swipeDirection = "left";
         } else if(this.input.activePointer.upX > this.input.activePointer.downX) {
-          swipeDirection = "down";
+          swipeDirection = "right";
         }
       }
     } else if (this.cursors.left.isDown && !touchingDown){
