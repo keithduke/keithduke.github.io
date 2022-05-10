@@ -98,9 +98,9 @@ export default class Game extends Phaser.Scene {
     if (!this.input.activePointer.isDown && !touchingDown){
       if(Math.abs(this.input.activePointer.upX - this.input.activePointer.downX) >= 50) {
         if(this.input.activePointer.upX < this.input.activePointer.downX) {
-          swipeDirection = "left";
+          this.swipeDirection = "left";
         } else if(this.input.activePointer.upX > this.input.activePointer.downX) {
-          swipeDirection = "right";
+          this.swipeDirection = "right";
         }
       }
     } else if (this.cursors.left.isDown && !touchingDown){
