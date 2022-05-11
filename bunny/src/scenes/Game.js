@@ -34,7 +34,7 @@ export default class Game extends Phaser.Scene {
       const y = 150 * i;
 
       const platform = this.platforms.create(x, y, 'platform');
-      platform.scale = 0.5;
+      platform.scale = 0.333;
 
       const body = platform.body;
       body.updateFromGameObject();
@@ -156,7 +156,7 @@ export default class Game extends Phaser.Scene {
     this.carrotsCollected++;
     const value = `Carrots: ${this.carrotsCollected}`;
     this.carrotsCollectedText.text = value;
-    this.player.setVelocityY(-300);
+    this.player.setVelocityY(-325);
   }
 
   findBottomMostPlatform(){
