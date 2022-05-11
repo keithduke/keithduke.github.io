@@ -154,7 +154,7 @@ export default class Game extends Phaser.Scene {
     this.carrotsCollected++;
     const value = `Carrots: ${this.carrotsCollected}`;
     this.carrotsCollectedText.text = value;
-    this.player.setVelocityY(300);
+    this.player.setVelocityY(-300);
   }
 
   findBottomMostPlatform(){
