@@ -8,6 +8,7 @@ export default class Game extends Phaser.Scene {
   carrots;
   carrotsCollected = 0;
   carrotsCollectedText;
+  halfScreenWidth;
 
   // TODO Cleanup carrots not picked up, see note in guide
 
@@ -21,6 +22,7 @@ export default class Game extends Phaser.Scene {
     this.load.image('bunny-jump', 'assets/jumperpack/PNG/Players/bunny1_jump.png');
     this.load.image('carrot', 'assets/jumperpack/PNG/Items/carrot.png');
     this.cursors = this.input.keyboard.createCursorKeys();
+    this.halfScreenWidth = this.sys.game.canvas.width/2;
   };
   create(){
     this.add.image(180, 320, 'background')
@@ -59,7 +61,6 @@ export default class Game extends Phaser.Scene {
     this.carrots = this.physics.add.group({
       classType: Carrot
     });
-    this.carrots.get(180, 320, 'carrot');
     this.physics.add.collider(this.platforms, this.carrots);
     this.physics.add.overlap(
       this.player,
@@ -95,12 +96,13 @@ export default class Game extends Phaser.Scene {
 
     // left and right handling swipe then keyboard
     this.player.setVelocityX(0);
-    let swipeDirection = "";
+    let tapDirection = "";
+
     if (this.input.activePointer.isDown && !touchingDown){
-      if(this.input.activePointer.downX < this.player.body.position.x) {
-        swipeDirection = "left";
-      } else if(this.input.activePointer.downX > this.player.body.position.x) {
-        swipeDirection = "right";
+      if(this.input.activePointer.downX < this.halfScreenWidth) {
+        tapDirection = "left";
+      } else if(this.input.activePointer.downX > this.halfScreenWidth) {
+        tapDirection = "right";
       }
     } else if (this.cursors.left.isDown && !touchingDown){
       this.player.setVelocityX(-200);
@@ -108,9 +110,9 @@ export default class Game extends Phaser.Scene {
       this.player.setVelocityX(200);
     }
 
-    if(swipeDirection == "left" && !touchingDown){
+    if(tapDirection == "left" && !touchingDown){
       this.player.setVelocityX(-300);
-    } else if (swipeDirection == "right" && !touchingDown){
+    } else if (tapDirection == "right" && !touchingDown){
       this.player.setVelocityX(300);
     }
 
