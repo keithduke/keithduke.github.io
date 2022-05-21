@@ -9,6 +9,7 @@ export default class Game extends Phaser.Scene {
   carrotsCollected = 0;
   carrotsCollectedText;
   halfScreenWidth;
+  backgroundColor;
 
   // TODO Cleanup carrots not picked up, see note in guide
 
@@ -16,7 +17,6 @@ export default class Game extends Phaser.Scene {
     super('game');
   };
   preload(){
-    this.load.image('background', 'assets/jumperpack/PNG/Background/bg_layer1.png');
     this.load.image('platform', 'assets/jumperpack/PNG/Environment/ground_grass.png');
     this.load.image('bunny-stand', 'assets/jumperpack/PNG/Players/bunny1_stand.png');
     this.load.image('bunny-jump', 'assets/jumperpack/PNG/Players/bunny1_jump.png');
@@ -25,8 +25,6 @@ export default class Game extends Phaser.Scene {
     this.halfScreenWidth = this.sys.game.canvas.width/2;
   };
   create(){
-    this.add.image(180, 320, 'background')
-      .setScrollFactor(1,0);
 
     this.platforms = this.physics.add.staticGroup();
     for (let i = 0; i < 5; ++i) {

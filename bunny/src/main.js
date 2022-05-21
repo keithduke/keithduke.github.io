@@ -8,6 +8,7 @@ export default new Phaser.Game({
   type: Phaser.AUTO,
   width: 360,
   height: 640,
+  backgroundColor: '#ade6ff',
   scene: [Game, GameOver],
   physics: {
     default: 'arcade',
