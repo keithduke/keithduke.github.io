@@ -9,7 +9,10 @@ export default class Game extends Phaser.Scene {
   carrotsCollected = 0;
   carrotsCollectedText;
   halfScreenWidth;
-  backgroundColor;
+  skyColor;
+  spaceColor;
+  cameraHeight;
+  cameraWidth;
 
   // TODO Cleanup carrots not picked up, see note in guide
 
@@ -17,22 +20,28 @@ export default class Game extends Phaser.Scene {
     super('game');
   };
   preload(){
-    this.load.image('platform', 'assets/jumperpack/PNG/Environment/ground_grass.png');
-    this.load.image('bunny-stand', 'assets/jumperpack/PNG/Players/bunny1_stand.png');
-    this.load.image('bunny-jump', 'assets/jumperpack/PNG/Players/bunny1_jump.png');
-    this.load.image('carrot', 'assets/jumperpack/PNG/Items/carrot.png');
+    this.load.image('platform', 'assets/jumperpack/PNG/Environment/ground_grass2.png');
+    this.load.image('bunny-stand', 'assets/jumperpack/PNG/Players/bunny3_stand.png');
+    this.load.image('bunny-jump', 'assets/jumperpack/PNG/Players/bunny3_jump.png');
+    this.load.image('carrot', 'assets/jumperpack/PNG/Items/carrot2.png');
     this.cursors = this.input.keyboard.createCursorKeys();
     this.halfScreenWidth = this.sys.game.canvas.width/2;
   };
   create(){
 
+    this.cameraHeight = this.cameras.main.height;
+    this.cameraWidth = this.cameras.main.width;
+    this.skyColor = new Phaser.Display.Color(203, 219, 252);
+    this.spaceColor = new Phaser.Display.Color(0, 0, 0);
+    this.cameras.main.setBackgroundColor(this.skyColor);
     this.platforms = this.physics.add.staticGroup();
     for (let i = 0; i < 5; ++i) {
-      const x = Phaser.Math.Between(80, 400);
-      const y = 150 * i;
+      // x = width = 180 minus some padding
+      const x = Phaser.Math.Between(10, 350);
+      const y = 140 * i;
 
       const platform = this.platforms.create(x, y, 'platform');
-      platform.scale = 0.333;
+      platform.scale = 2.5;
 
       const body = platform.body;
       body.updateFromGameObject();
@@ -45,7 +54,7 @@ export default class Game extends Phaser.Scene {
       .setOrigin(0.5, 0);
 
     // add player
-    this.player = this.physics.add.sprite(180, 320, 'bunny-stand').setScale(0.5);
+    this.player = this.physics.add.sprite(90, 160, 'bunny-stand').setScale(2.5);
     this.player.body.checkCollision.up = false;
     this.player.body.checkCollision.left = false;
     this.player.body.checkCollision.right = false;
@@ -59,7 +68,9 @@ export default class Game extends Phaser.Scene {
     this.carrots = this.physics.add.group({
       classType: Carrot
     });
+
     this.physics.add.collider(this.platforms, this.carrots);
+
     this.physics.add.overlap(
       this.player,
       this.carrots,
@@ -68,13 +79,14 @@ export default class Game extends Phaser.Scene {
       this
     )
   };
+
   update(){
     this.platforms.children.iterate(child => {
       const platform = child;
       const scrollY = this.cameras.main.scrollY;
 
       if (platform.y >= scrollY + 700){
-        platform.y = scrollY - Phaser.Math.Between(50, 100);
+        platform.y = scrollY - Phaser.Math.Between(25, 50);
         platform.body.updateFromGameObject();
         this.addCarrotAbove(platform);
       }
@@ -140,6 +152,7 @@ export default class Game extends Phaser.Scene {
     // set active and visible
     carrot.setActive(true);
     carrot.setVisible(true);
+    carrot.setScale(2.5);
 
     this.add.existing(carrot);
     carrot.body.setSize(carrot.width, carrot.height);
