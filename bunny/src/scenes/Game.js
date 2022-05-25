@@ -20,10 +20,10 @@ export default class Game extends Phaser.Scene {
     super('game');
   };
   preload(){
-    this.load.image('platform', 'assets/jumperpack/PNG/Environment/ground_grass2.png');
-    this.load.image('bunny-stand', 'assets/jumperpack/PNG/Players/bunny3_stand.png');
-    this.load.image('bunny-jump', 'assets/jumperpack/PNG/Players/bunny3_jump.png');
-    this.load.image('carrot', 'assets/jumperpack/PNG/Items/carrot2.png');
+    this.load.image('platform', 'assets/ground_grass2.png');
+    this.load.image('bunny-stand', 'assets/bunny3_stand.png');
+    this.load.image('bunny-jump', 'assets/bunny3_jump.png');
+    this.load.image('carrot', 'assets/carrot2.png');
     this.cursors = this.input.keyboard.createCursorKeys();
     this.halfScreenWidth = this.sys.game.canvas.width/2;
   };
