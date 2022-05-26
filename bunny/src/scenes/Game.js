@@ -19,6 +19,7 @@ export default class Game extends Phaser.Scene {
   constructor(){
     super('game');
   };
+
   preload(){
     this.load.image('platform', 'assets/ground_grass2.png');
     this.load.image('bunny-stand', 'assets/bunny3_stand.png');
@@ -27,14 +28,15 @@ export default class Game extends Phaser.Scene {
     this.cursors = this.input.keyboard.createCursorKeys();
     this.halfScreenWidth = this.sys.game.canvas.width/2;
   };
-  create(){
 
+  create(){
     this.cameraHeight = this.cameras.main.height;
     this.cameraWidth = this.cameras.main.width;
     this.skyColor = new Phaser.Display.Color(203, 219, 252);
     this.spaceColor = new Phaser.Display.Color(0, 0, 0);
     this.cameras.main.setBackgroundColor(this.skyColor);
     this.platforms = this.physics.add.staticGroup();
+
     for (let i = 0; i < 5; ++i) {
       // x = width = 180 minus some padding
       const x = Phaser.Math.Between(10, 350);
@@ -94,7 +96,7 @@ export default class Game extends Phaser.Scene {
 
     const touchingDown = this.player.body.touching.down;
     if (touchingDown){
-      // jump straight up
+      // jump
       this.player.setVelocityY(-300);
       this.player.setTexture('bunny-jump');
     }
@@ -136,12 +138,12 @@ export default class Game extends Phaser.Scene {
   };
 
   horizontalWrap(sprite){
-    const halfWidth = sprite.displayWidth * 0.5;
-    const gameWidth = this.scale.width;
-    if (sprite.x < -halfWidth){
-      sprite.x = gameWidth + halfWidth
-    } else if (sprite.x > gameWidth + halfWidth){
-      sprite.x = -halfWidth;
+    const spriteWidth = sprite.displayWidth;
+    const gameWidth = this.sys.game.canvas.width;
+    if (sprite.x < -spriteWidth){
+      sprite.x = gameWidth + spriteWidth
+    } else if (sprite.x > gameWidth + spriteWidth){
+      sprite.x = -spriteWidth;
     }
   };
 
