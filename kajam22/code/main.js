@@ -29,19 +29,23 @@ scene("game", () => {
     body(),
   ]);
 
+  let doubleJumped = false;
   function jump() {
     if (bean.isGrounded()) {
       bean.jump(JUMP_FORCE);
+      doubleJumped = false;
+    } else if (!doubleJumped) {
+      bean.jump(JUMP_FORCE/2);
+      doubleJumped = true;
     }
   }
 
   onKeyPress("space", jump);
   onTouchStart(jump);
 
-  // Spawn a tree every second
   function spawnTree() {
     add([
-      rect(48, rand(24, 64)),
+      rect(12, rand(24, 64)),
       area(),
       outline(4),
       pos(width(), height() - 48),
@@ -51,7 +55,7 @@ scene("game", () => {
       "tree", // tag name
     ]);
     // From the example, infinite recursion
-    wait(rand(0.5,1.5), () => {
+    wait(rand(0.5,2), () => {
       spawnTree();
     });
   };
