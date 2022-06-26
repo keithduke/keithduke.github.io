@@ -6,7 +6,7 @@ const SPEED = 480;
 kaboom({
   width: 640,
   height: 360,
-  canvas: document.querySelector("gameCanvas"),
+  background: [ 93, 163, 238, ],
   debug: true, // TODO turn off
 });
 
@@ -69,7 +69,12 @@ scene("game", () => {
 
   let score = 0;
   const scoreLabel = add([
-    text(score),
+    text(
+      score, {
+        font: "sinko",
+        size: 36
+      }
+    ),
     pos(24,24),
   ]);
 
@@ -87,7 +92,6 @@ scene("game", () => {
 });
 
 scene("start", () => {
-  // add a character to screen
   add([
     sprite("bean"),
     pos(width() / 2, height() / 2 - 80),
@@ -97,11 +101,14 @@ scene("start", () => {
 
 
   add([
-    text("Hit space or tap to begin"),
-    pos(center()),
+    text(
+      "Hit space or tap to begin", {
+        size: 24,
+        font: "sink"
+      }
+    ),
     pos(width() / 2, height() / 2 + 80),
     origin("center"),
-    scale(0.5),
   ]);
 
   onKeyPress("space", () => go("game"));
@@ -109,7 +116,6 @@ scene("start", () => {
 });
 
 scene("lose", (score) => {
-  // add a character to screen
   add([
     sprite("bean"),
     pos(width() / 2, height() / 2 - 80),
@@ -117,10 +123,13 @@ scene("lose", (score) => {
     origin("center"),
   ]);
 
-
   add([
-    text("Game Over"),
-    pos(center()),
+    text(
+      "Game Over", {
+        size: 36,
+        font: "sink"
+      }
+    ),
     pos(width() / 2, height() / 2 + 80),
     origin("center"),
   ]);
