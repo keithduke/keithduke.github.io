@@ -3,7 +3,12 @@ const JUMP_FORCE = 800;
 const SPEED = 480;
 
 // initialize context
-kaboom();
+kaboom({
+  width: 640,
+  height: 360,
+  canvas: document.querySelector("gameCanvas"),
+  debug: true, // TODO turn off
+});
 
 // load assets
 loadSprite("bean", "sprites/bean.png");
@@ -81,6 +86,28 @@ scene("game", () => {
 
 });
 
+scene("start", () => {
+  // add a character to screen
+  add([
+    sprite("bean"),
+    pos(width() / 2, height() / 2 - 80),
+    scale(2),
+    origin("center"),
+  ]);
+
+
+  add([
+    text("Hit space or tap to begin"),
+    pos(center()),
+    pos(width() / 2, height() / 2 + 80),
+    origin("center"),
+    scale(0.5),
+  ]);
+
+  onKeyPress("space", () => go("game"));
+  onTouchStart(() => go("game"));
+});
+
 scene("lose", (score) => {
   // add a character to screen
   add([
@@ -102,5 +129,8 @@ scene("lose", (score) => {
   onTouchStart(() => go("game"));
 });
 
-go("game");
+go("start");
+
+// Focus on the canvas so first tap works in game
+//document.getElementById("gameCanvas").focus();
 
