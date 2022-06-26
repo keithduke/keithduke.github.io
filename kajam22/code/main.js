@@ -7,6 +7,7 @@ kaboom({
   width: 640,
   height: 360,
   background: [ 93, 163, 238, ],
+  canvas: document.getElementById("gameCanvas"),
   debug: true, // TODO turn off
 });
 
@@ -141,5 +142,5 @@ scene("lose", (score) => {
 go("start");
 
 // Focus on the canvas so first tap works in game
-//document.getElementById("gameCanvas").focus();
+document.getElementById("gameCanvas").focus();
 
