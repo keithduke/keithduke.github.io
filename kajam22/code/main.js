@@ -44,7 +44,7 @@ const LEVELS = [
 // initialize context
 kaboom({
   width: 640,
-  height: 360,
+  height: 320,
   background: [ 93, 163, 238, ],
   canvas: document.getElementById("gameCanvas"),
   debug: true, // TODO turn off
