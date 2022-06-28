@@ -43,7 +43,7 @@ const LEVELS = [
 
 // Screen size stuffs
 const gameWidth = 640;
-const gameHeight = 320;
+const gameHeight = 300;
 // initialize context
 kaboom({
   width: gameWidth,
