@@ -2,6 +2,44 @@ const FLOOR_HEIGHT = 48;
 const JUMP_FORCE = 800;
 const SPEED = 480;
 const GRAVITY_FORCE = 2400;
+const LEVELS = [
+  [
+    "                                                                                                ",
+    "                                                                                                ",
+    "                                                                                                ",
+    "                                                                                                ",
+    "                                                                                                ",
+    "                                                                                                ",
+    "                                                                                                ",
+    "                                                                                                ",
+    "                                                                                                ",
+    "                                                                                                ",
+    "                                                                                                ",
+    "                                                                                                ",
+    "                                                                                                ",
+    "                                                                                                ",
+    "================================================================================================",
+    "================================================================================================",
+  ],
+  [
+    "                                                                                                ",
+    "                                                                                                ",
+    "                                                                                                ",
+    "                                                                                                ",
+    "                                                                                                ",
+    "                                                                                                ",
+    "                                                                                                ",
+    "                                                                                                ",
+    "                                                                                                ",
+    "                                                                                                ",
+    "                                                                                                ",
+    "                                                                                                ",
+    "                                                                                                ",
+    "                                                                                                ",
+    "================================================================================================",
+    "================================================================================================",
+  ]
+];
 
 // initialize context
 kaboom({
@@ -128,6 +166,7 @@ scene("lose", (score) => {
   // High score is browser based, using localStorage
   let highScore = localStorage.getItem('highScore');
   let highScoreText = "";
+  let shakeIt = false;
 
   if (highScore) {
     highScoreText = "High Score: " + highScore;
@@ -138,6 +177,7 @@ scene("lose", (score) => {
   if (!highScore || highScore < score){
     localStorage.setItem("highScore", score);
     highScoreText = "New High Score!";
+    shakeIt = true;
   }
 
   add([
@@ -167,6 +207,7 @@ scene("lose", (score) => {
     ),
     pos(width() / 2, height() / 2 + 80),
     origin("center"),
+    "highScoreText",
   ]);
 
   add([
@@ -182,6 +223,17 @@ scene("lose", (score) => {
 
   onKeyPress("space", () => go("game"));
   onTouchStart(() => go("game"));
+
+  onUpdate(() => {
+    if (shakeIt) {
+      // apply random values
+      // let oddOrEven = Math.random() < 0.5 ? -1 : 1;
+      // let a = oddOrEven * (Math.floor(Math.random() * 100));
+      // let b = oddOrEven * (Math.random() * 40);
+      console.log("we should be shaking it");
+    }
+  });
+
 });
 
 go("start");
