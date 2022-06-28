@@ -5,8 +5,8 @@ const GRAVITY_FORCE = 2400;
 
 // initialize context
 kaboom({
-  width: 640,
-  height: 360,
+  width: screen.width/1.5,
+  height: screen.height/1.5,
   background: [ 93, 163, 238, ],
   canvas: document.getElementById("gameCanvas"),
   debug: true, // TODO turn off
