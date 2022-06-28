@@ -1,6 +1,7 @@
 const FLOOR_HEIGHT = 48;
 const JUMP_FORCE = 800;
 const SPEED = 480;
+const GRAVITY_FORCE = 2400;
 
 // initialize context
 kaboom({
@@ -13,9 +14,10 @@ kaboom({
 
 // load assets
 loadSprite("bean", "sprites/bean.png");
+loadSound("jump", "sounds/jump-sound.wav");
 
 scene("game", () => {
-  gravity(2400); // make a const
+  gravity(GRAVITY_FORCE);
 
   // add floor
   add([
@@ -40,9 +42,11 @@ scene("game", () => {
     if (bean.isGrounded()) {
       bean.jump(JUMP_FORCE);
       doubleJumped = false;
+      play("jump");
     } else if (!doubleJumped) {
       bean.jump(JUMP_FORCE/2);
       doubleJumped = true;
+      play("jump");
     }
   }
 
