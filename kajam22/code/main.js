@@ -41,10 +41,13 @@ const LEVELS = [
   ]
 ];
 
+// Screen size stuffs
+const gameWidth = window.screen.width/1.5;
+const gameHeight = window.screen.height/1.5;
 // initialize context
 kaboom({
-  width: 640,
-  height: 320,
+  width: gameWidth,
+  height: gameHeight,
   background: [ 93, 163, 238, ],
   canvas: document.getElementById("gameCanvas"),
   debug: true, // TODO turn off
