@@ -15,6 +15,8 @@ kaboom({
 // load assets
 loadSprite("bean", "sprites/bean.png");
 loadSound("jump", "sounds/jump-sound.wav");
+loadSound("doubleJump", "sounds/sfx_movement_jump2.wav");
+loadSound("impact", "sounds/sfx_sounds_impact9.wav");
 
 scene("game", () => {
   gravity(GRAVITY_FORCE);
@@ -46,7 +48,7 @@ scene("game", () => {
     } else if (!doubleJumped) {
       bean.jump(JUMP_FORCE/2);
       doubleJumped = true;
-      play("jump");
+      play("doubleJump");
     }
   }
 
@@ -90,6 +92,7 @@ scene("game", () => {
 
   bean.onCollide("tree", () => {
     addKaboom(bean.pos);
+    play("impact");
     shake();
     go("lose", score);
   });
