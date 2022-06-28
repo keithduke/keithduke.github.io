@@ -124,6 +124,22 @@ scene("start", () => {
 });
 
 scene("lose", (score) => {
+
+  // High score is browser based, using localStorage
+  let highScore = localStorage.getItem('highScore');
+  let highScoreText = "";
+
+  if (highScore) {
+    highScoreText = "High Score: " + highScore;
+  }
+
+  let yourScoreText = "Your Score: " + score;
+
+  if (!highScore || highScore < score){
+    localStorage.setItem("highScore", score);
+    highScoreText = "New High Score!";
+  }
+
   add([
     sprite("bean"),
     pos(width() / 2, height() / 2 - 80),
@@ -138,7 +154,29 @@ scene("lose", (score) => {
         font: "sink"
       }
     ),
+    pos(width() / 2, height() / 2 + 40),
+    origin("center"),
+  ]);
+
+  add([
+    text(
+      highScoreText, {
+        size: 24,
+        font: "sink"
+      }
+    ),
     pos(width() / 2, height() / 2 + 80),
+    origin("center"),
+  ]);
+
+  add([
+    text(
+      yourScoreText, {
+        size: 24,
+        font: "sink"
+      }
+    ),
+    pos(width() / 2, height() / 2 + 120),
     origin("center"),
   ]);
 
