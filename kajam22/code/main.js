@@ -1,68 +1,81 @@
-const FLOOR_HEIGHT = 48;
 const JUMP_FORCE = 800;
-const SPEED = 480;
 const GRAVITY_FORCE = 2400;
 const LEVELS = [
   [
     "                                                                                                ",
     "                                                                                                ",
+    "                               ================                                                 ",
+    "                                                                                                ",
+    "                  ~ ~      ~~~~~~~~~~~~~~~~~~~~~                                                ",
     "                                                                                                ",
     "                                                                                                ",
-    "                                                                                                ",
-    "                                                                                                ",
-    "                                                                                                ",
-    "                                                                                                ",
-    "                                                                                                ",
-    "                                                                                                ",
-    "                                                                                                ",
-    "                                                                                                ",
-    "                                                                                                ",
-    "                                                                                                ",
-    "================================================================================================",
-    "================================================================================================",
-  ],
-  [
-    "                                                                                                ",
-    "                                                                                                ",
-    "                                                                                                ",
-    "                                                                                                ",
-    "                                                                                                ",
-    "                                                                                                ",
-    "                                                                                                ",
-    "                                                                                                ",
-    "                                                                                                ",
-    "                                                                                                ",
-    "                                                                                                ",
-    "                                                                                                ",
-    "                                                                                                ",
-    "                                                                                                ",
-    "================================================================================================",
-    "================================================================================================",
+    "==========  ===  =====  =======================    =============================================",
   ]
 ];
 
-// Screen size stuffs
+// Screen size
 const gameWidth = 640;
-const gameHeight = 280;
+const gameHeight = 256;
+
 // initialize context
 kaboom({
   width: gameWidth,
   height: gameHeight,
   background: [ 93, 163, 238, ],
   canvas: document.getElementById("gameCanvas"),
-  debug: true, // TODO turn off
 });
 
 // load assets
 loadSprite("bean", "sprites/bean.png");
+loadSprite("ground", "sprites/ground.png");
 loadSound("jump", "sounds/jump-sound.wav");
 loadSound("doubleJump", "sounds/sfx_movement_jump2.wav");
 loadSound("impact", "sounds/sfx_sounds_impact9.wav");
+volume(0.25);
+debug.inspect = true;
 
-scene("game", () => {
+const levelConfig = {
+  width: 32,
+  height: 32,
+  pos: (0,0),
+  "=": () => [
+    sprite("ground"),
+    area(),
+    solid(),
+    "ground"
+  ],
+  "~": () => [
+    sprite("ground"),
+    area(),
+    solid(),
+    move(LEFT, 240),
+    "movingGround"
+  ]
+};
+
+scene("game", (levelNumber = 0) => {
+  layers([
+    "bg",
+    "game",
+    "ui",
+  ], "game");
+
+  // TODO why is this here?
   gravity(GRAVITY_FORCE);
 
+  const LEVEL = addLevel(LEVELS[levelNumber], levelConfig);
+
+  add([
+    text("Level " + (levelNumber + 1), { size: 24 }),
+    pos(vec2(150, 120)),
+    color(255, 255, 255),
+    origin("center"),
+    layer("ui"),
+    lifespan(1, { fade: 0.5 })
+  ]);
+
   // add floor
+  /*
   add([
     rect(width(), 48),
     pos(0, height() - 48),
@@ -71,6 +84,7 @@ scene("game", () => {
     solid(),
     color(127, 200, 255),
   ]);
+  */
 
   // add a character to screen
   const bean = add([
@@ -78,6 +92,8 @@ scene("game", () => {
     pos(80, 40),
     area(),
     body(),
+    scale(0.5),
+    move(RIGHT, 240),
   ]);
 
   let doubleJumped = false;
@@ -129,14 +145,36 @@ scene("game", () => {
   onUpdate(() => {
     score++;
     scoreLabel.text = score;
+    if (bean.pos.x < 0 || bean.pos.y > 350){
+        go("lose", score);
+    }
   });
 
-  bean.onCollide("tree", () => {
+  bean.onUpdate(() => {
+    var cameraPosition = camPos();
+    if (cameraPosition.x < bean.pos.x){
+      camPos(bean.pos.x, cameraPosition.y);
+    }
+  });
+
+  bean.onCollide("movingGround", (movingGround) => {
+    follow(movingGround);
+  });
+
+  bean.onCollide("tree", (tree) => {
     addKaboom(bean.pos);
     play("impact");
     shake();
-    go("lose", score);
+    //go("lose", score);
+    // push bean
+
+    bean.move(-1200, 0);
+    destroy(tree);
+    if (bean.pos.x < 0) {
+        go("lose", score);
+    }
   });
+
 
 });
 
