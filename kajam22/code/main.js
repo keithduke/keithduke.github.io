@@ -9,7 +9,7 @@ const LEVELS = [
     "                  ~ ~      ~~~~~~~~~~~~~~~~~~~~~                                                ",
     "                                                                                                ",
     "                                                                                                ",
-    "==========  ===  =====  =======================    =============================================",
+    "============== === === ========================    =============================================",
   ]
 ];
 
@@ -96,6 +96,16 @@ scene("game", (levelNumber = 0) => {
     move(RIGHT, 240),
   ]);
 
+  // add the thing chasing
+  add([
+    sprite("bean"),
+    pos(-40, 40),
+    area(),
+    body(),
+    move(RIGHT, 240),
+    "antagonist",
+  ]);
+
   let doubleJumped = false;
   function jump() {
     if (bean.isGrounded()) {
@@ -159,6 +169,10 @@ scene("game", (levelNumber = 0) => {
 
   bean.onCollide("movingGround", (movingGround) => {
     follow(movingGround);
+  });
+
+  bean.onCollide("antagonist", (antagonist) => {
+    go("lose", score);
   });
 
   bean.onCollide("tree", (tree) => {
