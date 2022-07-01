@@ -6,9 +6,9 @@ const LEVELS = [
     "                                                                                                ",
     "                               ================                                                 ",
     "                                                                                                ",
-    "                  ~ ~                   ~ ~ ~ ~                                                 ",
-    "                                                                                                ",
-    "                                                                                                ",
+    "                    ~                   ~ ~ ~ ~                                                 ",
+    "                  ~                                                                             ",
+    "                ~                                                                               ",
     "===============================================  =  ============================================",
   ]
 ];
@@ -21,7 +21,7 @@ const gameHeight = 256;
 kaboom({
   width: gameWidth,
   height: gameHeight,
-  background: [ 93, 163, 238, ],
+  background: [ 0, 153, 219, ],
   canvas: document.getElementById("gameCanvas"),
 });
 
@@ -78,6 +78,7 @@ loadSprite("antagonist", "sprites/farmer.png", {
 
 loadSprite("bean", "sprites/bean.png");
 loadSprite("ground", "sprites/ground.png");
+loadSprite("background", "sprites/background.png");
 loadSound("jump", "sounds/jump-sound.wav");
 loadSound("doubleJump", "sounds/sfx_movement_jump2.wav");
 loadSound("impact", "sounds/sfx_sounds_impact9.wav");
@@ -129,17 +130,12 @@ scene("game", (levelNumber = 0) => {
     lifespan(1, { fade: 0.5 })
   ]);
 
-  // add floor
-  /*
+  // add background
   add([
-    rect(width(), 48),
-    pos(0, height() - 48),
-    outline(4),
-    area(),
-    solid(),
-    color(127, 200, 255),
+    sprite("background"),
+    layer("bg"),
+    fixed(),
   ]);
-  */
 
   // add a character to screen
   const pepper = add([
