@@ -81,6 +81,7 @@ loadSprite("ground", "sprites/ground.png");
 loadSound("jump", "sounds/jump-sound.wav");
 loadSound("doubleJump", "sounds/sfx_movement_jump2.wav");
 loadSound("impact", "sounds/sfx_sounds_impact9.wav");
+loadSound("themeSong", "sounds/TechnoTronic2.mp3");
 volume(0.25);
 // debug.inspect = true;
 
@@ -103,6 +104,8 @@ const levelConfig = {
   ]
 };
 
+const themeSong = play("themeSong", {loop: true});
+
 scene("game", (levelNumber = 0) => {
   layers([
     "bg",
@@ -114,6 +117,8 @@ scene("game", (levelNumber = 0) => {
   gravity(GRAVITY_FORCE);
 
   const LEVEL = addLevel(LEVELS[levelNumber], levelConfig);
+  themeSong.stop();
+  themeSong.play();
 
   add([
     text("Level " + (levelNumber + 1), { size: 24 }),
@@ -277,12 +282,14 @@ scene("start", () => {
     origin("center"),
   ]);
 
+  themeSong.play();
   onKeyPress("space", () => go("game"));
   onTouchStart(() => go("game"));
 });
 
 scene("lose", (score) => {
 
+  themeSong.stop();
   // High score is browser based, using localStorage
   let highScore = localStorage.getItem('highScore');
   let highScoreText = "";
