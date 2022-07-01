@@ -9,7 +9,7 @@ const LEVELS = [
     "                  ~ ~                   ~ ~ ~ ~                                                 ",
     "                                                                                                ",
     "                                                                                                ",
-    "============== === === ========================  =  ============================================",
+    "===============================================  =  ============================================",
   ]
 ];
 
@@ -27,6 +27,31 @@ kaboom({
 
 // load assets
 loadSprite("pepper", "sprites/pepper.png", {
+	// The image contains 9 frames layed out horizontally, slice it into individual frames
+	sliceX: 8,
+	// Define animations
+	anims: {
+		"idle": {
+			// Starts from frame 0, ends at frame 3
+			from: 0,
+			to: 3,
+			// Frame per second
+			speed: 5,
+			loop: true,
+		},
+		"run": {
+			from: 0,
+			to: 7,
+			speed: 12,
+			loop: true,
+		},
+		// This animation only has 1 frame
+		"jump": 8
+	}
+});
+
+// load assets
+loadSprite("antagonist", "sprites/antagonist.png", {
 	// The image contains 9 frames layed out horizontally, slice it into individual frames
 	sliceX: 8,
 	// Define animations
@@ -121,7 +146,7 @@ scene("game", (levelNumber = 0) => {
 
   // add the thing chasing
   const antagonist = add([
-    sprite("bean"),
+    sprite("antagonist"),
     pos(-40, 40),
     area(),
     body(),
@@ -130,6 +155,7 @@ scene("game", (levelNumber = 0) => {
   ]);
 
   pepper.play("run");
+  antagonist.play("run");
 
   let doubleJumped = false;
   function jump() {
@@ -164,7 +190,7 @@ scene("game", (levelNumber = 0) => {
     });
   };
 
-  spawnTree();
+  //spawnTree();
 
   let score = 0;
   const scoreLabel = add([
@@ -226,21 +252,24 @@ scene("game", (levelNumber = 0) => {
 
 scene("start", () => {
   add([
-    sprite("pepper"),
-    pos(width() / 2, height() / 2 - 80),
-    scale(2),
-    origin("center"),
-  ]);
-
-
-  add([
     text(
-      "Hit space or tap to begin", {
+      "Panic! at the Pepper Patch", {
         size: 24,
         font: "sink"
       }
     ),
-    pos(width() / 2, height() / 2 + 80),
+    pos(width() / 2, height() / 2),
+    origin("center"),
+  ]);
+
+  add([
+    text(
+      "Hit space or tap to begin", {
+        size: 16,
+        font: "sink"
+      }
+    ),
+    pos(width() / 2, height() / 2 + 40),
     origin("center"),
   ]);
 
@@ -281,7 +310,7 @@ scene("lose", (score) => {
         font: "sink"
       }
     ),
-    pos(width() / 2, height() / 2 + 40),
+    pos(width() / 2, height() / 2),
     origin("center"),
   ]);
 
@@ -292,7 +321,7 @@ scene("lose", (score) => {
         font: "sink"
       }
     ),
-    pos(width() / 2, height() / 2 + 80),
+    pos(width() / 2, height() / 2 + 40),
     origin("center"),
     "highScoreText",
   ]);
@@ -304,7 +333,7 @@ scene("lose", (score) => {
         font: "sink"
       }
     ),
-    pos(width() / 2, height() / 2 + 120),
+    pos(width() / 2, height() / 2 + 80),
     origin("center"),
   ]);
 
