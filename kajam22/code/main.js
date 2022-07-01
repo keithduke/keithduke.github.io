@@ -51,8 +51,9 @@ loadSprite("pepper", "sprites/pepper.png", {
 });
 
 // load assets
-loadSprite("antagonist", "sprites/antagonist.png", {
+loadSprite("antagonist", "sprites/farmer.png", {
 	// The image contains 9 frames layed out horizontally, slice it into individual frames
+  scale: 1.5,
 	sliceX: 8,
 	// Define animations
 	anims: {
@@ -247,6 +248,9 @@ scene("game", (levelNumber = 0) => {
     destroy(tree);
   });
 
+  antagonist.onCollide("movingGround", (movingGround) => {
+    destroy(movingGround);
+  });
 
 });
 
