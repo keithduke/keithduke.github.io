@@ -6,10 +6,10 @@ const LEVELS = [
     "                                                                                                ",
     "                               ================                                                 ",
     "                                                                                                ",
-    "                  ~ ~      ~~~~~~~~~~~~~~~~~~~~~                                                ",
+    "                  ~ ~                   ~ ~ ~ ~                                                 ",
     "                                                                                                ",
     "                                                                                                ",
-    "============== === === ========================    =============================================",
+    "============== === === ========================  =  ============================================",
   ]
 ];
 
@@ -26,13 +26,37 @@ kaboom({
 });
 
 // load assets
+loadSprite("pepper", "sprites/pepper.png", {
+	// The image contains 9 frames layed out horizontally, slice it into individual frames
+	sliceX: 8,
+	// Define animations
+	anims: {
+		"idle": {
+			// Starts from frame 0, ends at frame 3
+			from: 0,
+			to: 3,
+			// Frame per second
+			speed: 5,
+			loop: true,
+		},
+		"run": {
+			from: 0,
+			to: 7,
+			speed: 12,
+			loop: true,
+		},
+		// This animation only has 1 frame
+		"jump": 8
+	}
+});
+
 loadSprite("bean", "sprites/bean.png");
 loadSprite("ground", "sprites/ground.png");
 loadSound("jump", "sounds/jump-sound.wav");
 loadSound("doubleJump", "sounds/sfx_movement_jump2.wav");
 loadSound("impact", "sounds/sfx_sounds_impact9.wav");
 volume(0.25);
-debug.inspect = true;
+// debug.inspect = true;
 
 const levelConfig = {
   width: 32,
@@ -87,33 +111,34 @@ scene("game", (levelNumber = 0) => {
   */
 
   // add a character to screen
-  const bean = add([
-    sprite("bean"),
+  const pepper = add([
+    sprite("pepper"),
     pos(80, 40),
     area(),
     body(),
-    scale(0.5),
     move(RIGHT, 240),
   ]);
 
   // add the thing chasing
-  add([
+  const antagonist = add([
     sprite("bean"),
     pos(-40, 40),
     area(),
     body(),
-    move(RIGHT, 240),
+    move(RIGHT, 245),
     "antagonist",
   ]);
 
+  pepper.play("run");
+
   let doubleJumped = false;
   function jump() {
-    if (bean.isGrounded()) {
-      bean.jump(JUMP_FORCE);
+    if (pepper.isGrounded()) {
+      pepper.jump(JUMP_FORCE);
       doubleJumped = false;
       play("jump");
     } else if (!doubleJumped) {
-      bean.jump(JUMP_FORCE/2);
+      pepper.jump(JUMP_FORCE/2);
       doubleJumped = true;
       play("doubleJump");
     }
@@ -155,38 +180,45 @@ scene("game", (levelNumber = 0) => {
   onUpdate(() => {
     score++;
     scoreLabel.text = score;
-    if (bean.pos.x < 0 || bean.pos.y > 350){
+    if (pepper.pos.x < 0 || pepper.pos.y > 350){
         go("lose", score);
     }
   });
 
-  bean.onUpdate(() => {
+  pepper.onUpdate(() => {
     var cameraPosition = camPos();
-    if (cameraPosition.x < bean.pos.x){
-      camPos(bean.pos.x, cameraPosition.y);
+    if (cameraPosition.x < pepper.pos.x){
+      camPos(pepper.pos.x, cameraPosition.y);
     }
   });
 
-  bean.onCollide("movingGround", (movingGround) => {
+  pepper.onCollide("movingGround", (movingGround) => {
     follow(movingGround);
   });
 
-  bean.onCollide("antagonist", (antagonist) => {
+  pepper.onCollide("antagonist", (antagonist) => {
     go("lose", score);
   });
 
-  bean.onCollide("tree", (tree) => {
-    addKaboom(bean.pos);
+  pepper.onCollide("tree", (tree) => {
+    addKaboom(pepper.pos);
     play("impact");
     shake();
     //go("lose", score);
     // push bean
 
-    bean.move(-1200, 0);
+    pepper.move(-1200, 0);
     destroy(tree);
-    if (bean.pos.x < 0) {
+    if (pepper.pos.x < 0) {
         go("lose", score);
     }
+  });
+
+  antagonist.onCollide("tree", (tree) => {
+    addKaboom(antagonist.pos);
+    play("impact");
+    antagonist.move(-1200, 0);
+    destroy(tree);
   });
 
 
@@ -194,7 +226,7 @@ scene("game", (levelNumber = 0) => {
 
 scene("start", () => {
   add([
-    sprite("bean"),
+    sprite("pepper"),
     pos(width() / 2, height() / 2 - 80),
     scale(2),
     origin("center"),
@@ -236,7 +268,7 @@ scene("lose", (score) => {
   }
 
   add([
-    sprite("bean"),
+    sprite("pepper"),
     pos(width() / 2, height() / 2 - 80),
     scale(2),
     origin("center"),
