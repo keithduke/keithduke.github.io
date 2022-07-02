@@ -6,11 +6,11 @@ const LEVELS = [
   [
     "                                                                                                          ",
     "                                                                                                  t       ",
-    "                               ================                                                   m       ",
     "                                                                                                  m       ",
-    "                                                                                                  m       ",
-    "                                                                                                  m       ",
-    "                                                                                                  g       ",
+    "                               ioooooooooooooop                                                   m       ",
+    "a                                y    aaa   y                                                     m       ",
+    "aa                               y   aaaaaa y                                                     m       ",
+    "aaa                              u aaaaaaaa u                                                     g       ",
     "================================================lhrlhr=====================lhr==lhr=======================",
   ]
 ];
@@ -29,33 +29,19 @@ kaboom({
 
 // load assets
 loadSprite("pepper", "sprites/pepper.png", {
-	// The image contains 9 frames layed out horizontally, slice it into individual frames
 	sliceX: 8,
-	// Define animations
 	anims: {
-		"idle": {
-			// Starts from frame 0, ends at frame 3
-			from: 0,
-			to: 3,
-			// Frame per second
-			speed: 5,
-			loop: true,
-		},
 		"run": {
 			from: 0,
 			to: 7,
 			speed: 12,
 			loop: true,
-		},
-		// This animation only has 1 frame
-		"jump": 8
+		}
 	}
 });
 
 loadSprite("antagonist", "sprites/newfarmer.png", {
-	// The image contains 9 frames layed out horizontally, slice it into individual frames
 	sliceX: 9,
-	// Define animations
 	anims: {
 		"run": {
 			from: 0,
@@ -63,22 +49,17 @@ loadSprite("antagonist", "sprites/newfarmer.png", {
 			speed: 12,
 			loop: true,
 		},
-		// This animation only has 1 frame
 		"gotcha": 8
 	}
 });
 
 loadSprite("bird", "sprites/bird.png", {
-	// The image contains 9 frames layed out horizontally, slice it into individual frames
   scale: 1,
 	sliceX: 4,
-	// Define animations
 	anims: {
 		"idle": {
-			// Starts from frame 0, ends at frame 3
 			from: 0,
 			to: 3,
-			// Frame per second
 			speed: 5,
 			loop: true,
 		}
@@ -94,6 +75,12 @@ loadSprite("hole", "sprites/hole.png");
 loadSprite("gateBottom", "sprites/gateBottom.png");
 loadSprite("gateMiddle", "sprites/gateMiddle.png");
 loadSprite("gateTop", "sprites/gateTop.png");
+loadSprite("barnLeft", "sprites/barnLeft.png");
+loadSprite("barnMiddle", "sprites/barnMiddle.png");
+loadSprite("barnRight", "sprites/barnRight.png");
+loadSprite("barnPoleBottom", "sprites/barnPoleBottom.png");
+loadSprite("barnPoleMiddle", "sprites/barnPoleMiddle.png");
+loadSprite("haybale", "sprites/haybale.png");
 loadSprite("background", "sprites/background.png");
 loadSound("jump", "sounds/jump-sound.wav");
 loadSound("doubleJump", "sounds/sfx_movement_jump2.wav");
@@ -101,7 +88,6 @@ loadSound("impact", "sounds/sfx_sounds_impact9.wav");
 loadSound("chirp", "sounds/bird2.wav");
 loadSound("themeSong", "sounds/TechnoTronic2.mp3");
 volume(0.25);
-// debug.inspect = true;
 
 const levelConfig = {
   width: 32,
@@ -132,6 +118,33 @@ const levelConfig = {
   "h": () => [
     sprite("hole")
   ],
+  "i": () => [
+    sprite("barnLeft"),
+    area(),
+    solid(),
+    "ground"
+  ],
+  "o": () => [
+    sprite("barnMiddle"),
+    area(),
+    solid(),
+    "ground"
+  ],
+  "p": () => [
+    sprite("barnRight"),
+    area(),
+    solid(),
+    "ground"
+  ],
+  "a": () => [
+    sprite("haybale")
+  ],
+  "y": () => [
+    sprite("barnPoleMiddle")
+  ],
+  "u": () => [
+    sprite("barnPoleBottom")
+  ],
   "g": () => [
     sprite("gateBottom"),
     area(),
@@ -158,7 +171,6 @@ scene("game", (levelNumber = 0) => {
     "ui",
   ], "game");
 
-  // TODO why is this here?
   gravity(GRAVITY_FORCE);
 
   const LEVEL = addLevel(LEVELS[levelNumber], levelConfig);
@@ -171,6 +183,7 @@ scene("game", (levelNumber = 0) => {
     color(255, 255, 255),
     origin("center"),
     layer("ui"),
+    fixed(),
     lifespan(1, { fade: 0.5 })
   ]);
 
@@ -205,14 +218,16 @@ scene("game", (levelNumber = 0) => {
 
   let doubleJumped = false;
   function jump() {
-    if (pepper.isGrounded()) {
-      pepper.jump(JUMP_FORCE);
-      doubleJumped = false;
-      play("jump");
-    } else if (!doubleJumped) {
-      pepper.jump(JUMP_FORCE/2);
-      doubleJumped = true;
-      play("doubleJump");
+    if (!pepper.isDead){
+      if (pepper.isGrounded()) {
+        pepper.jump(JUMP_FORCE);
+        doubleJumped = false;
+        play("jump");
+      } else if (!doubleJumped) {
+        pepper.jump(JUMP_FORCE/2);
+        doubleJumped = true;
+        play("doubleJump");
+      }
     }
   }
 
@@ -222,7 +237,7 @@ scene("game", (levelNumber = 0) => {
   function spawnBird() {
     add([
       sprite("bird", {anim: 'idle'}),
-      pos(pepper.pos.x + width(), rand(140, 210)),
+      pos(pepper.pos.x + width(), rand(140, 200)),
       scale(0.75),
       area(),
       solid(),
@@ -237,41 +252,14 @@ scene("game", (levelNumber = 0) => {
 
   spawnBird();
 
-  let score = 0;
-  const scoreLabel = add([
-    text(
-      score, {
-        font: "sinko",
-        size: 36
-      }
-    ),
-    pos(24,24),
-  ]);
-
-  onUpdate(() => {
-    if (pepper.pos.x < 0 || pepper.pos.y > 350){
-        go("end", "You fell into a hole!");
-    }
-  });
-
-  pepper.onUpdate(() => {
-    var cameraPosition = camPos();
-    if (cameraPosition.x < pepper.pos.x){
-      camPos(pepper.pos.x, cameraPosition.y);
-    }
-  });
-
-  pepper.onCollide("bird", (bird) => {
-    follow(bird);
-  });
-
   pepper.onCollide("gate", (gate) => {
     go("end", "Congrats! You escaped!");
   });
 
   pepper.onCollide("antagonist", (antagonist) => {
     // if you havent fallen into a hole
-    if (pepper.pos.y < 185){
+    if (pepper.pos.y > 180){
+      pepper.isDead = true;
       destroy(pepper);
       antagonist.play("gotcha");
 
@@ -291,25 +279,31 @@ scene("game", (levelNumber = 0) => {
   });
 
   pepper.onCollide("bird", (bird) => {
-    addKaboom(pepper.pos);
     play("chirp", {volume: 0.25});
     shake();
     pepper.move(-1200, 0);
     destroy(bird);
   });
 
-  antagonist.onCollide("bird", (tree) => {
-    addKaboom(antagonist.pos);
+  antagonist.onCollide("bird", (bird) => {
     play("chirp", {volume: 0.25});
     antagonist.move(-1200, 0);
-    destroy(tree);
+    destroy(bird);
   });
 
-  antagonist.onCollide("bird", (bird) => {
-    destroy(bird);
-    antagonist.move(-1200, 0);
-    // sqwak sound
+  onUpdate(() => {
+    if (pepper.pos.x < 0 || pepper.pos.y > 350){
+        go("end", "You fell into a hole!");
+    }
   });
+
+  pepper.onUpdate(() => {
+    var cameraPosition = camPos();
+    if (cameraPosition.x < pepper.pos.x){
+      camPos(pepper.pos.x, cameraPosition.y);
+    }
+  });
+
 
 });
 
@@ -339,6 +333,36 @@ scene("start", () => {
   ]);
 
   themeSong.play();
+  onKeyPress("space", () => go("howto"));
+  onTouchStart(() => go("howto"));
+});
+
+scene("howto", () => {
+  add([
+    text(
+      "Can you escape the frantic farmer\nwho is hot to catch you?\nPress space or tap screen to\njump over obstacles and make it to the end!", {
+        size: 16,
+        font: "sink"
+      }
+    ),
+    pos(width() / 2, height() / 2),
+    origin("center"),
+    color(255, 255, 255)
+  ]);
+
+  add([
+    text(
+      "Hit space or tap to begin", {
+        size: 16,
+        font: "sink"
+      }
+    ),
+    pos(width() / 2, height() / 2 + 60),
+    origin("center"),
+    color(0, 255, 0)
+  ]);
+
+
   onKeyPress("space", () => go("game"));
   onTouchStart(() => go("game"));
 });
@@ -346,7 +370,6 @@ scene("start", () => {
 scene("end", (endingText) => {
 
   themeSong.stop();
-
 
   add([
     sprite("pepper"),
@@ -392,11 +415,9 @@ scene("end", (endingText) => {
   onKeyPress("space", () => go("game"));
   onTouchStart(() => go("game"));
 
-  onUpdate(() => {
-  });
-
 });
 
+// Fire it up!
 go("start");
 
 // Focus on the canvas so first tap works in game
