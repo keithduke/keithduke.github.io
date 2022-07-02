@@ -193,7 +193,7 @@ scene("game", (levelNumber = 0) => {
   // add the thing chasing
   const antagonist = add([
     sprite("antagonist"),
-    pos(-20, 40),
+    pos(-120, 40),
     area(),
     body(),
     move(RIGHT, ENEMY_MOVESPEED),
@@ -249,10 +249,8 @@ scene("game", (levelNumber = 0) => {
   ]);
 
   onUpdate(() => {
-    score++;
-    scoreLabel.text = score;
     if (pepper.pos.x < 0 || pepper.pos.y > 350){
-        go("lose", score);
+        go("end", "You fell into a hole!");
     }
   });
 
@@ -268,7 +266,7 @@ scene("game", (levelNumber = 0) => {
   });
 
   pepper.onCollide("gate", (gate) => {
-    go("lose", score);
+    go("end", "Congrats! You escaped!");
   });
 
   pepper.onCollide("antagonist", (antagonist) => {
@@ -287,23 +285,17 @@ scene("game", (levelNumber = 0) => {
       ]);
 
       wait(1, () => {
-        go("lose", score);
+        go("end", "You were caught by the farmer!");
       });
     }
   });
 
-  pepper.onCollide("bird", (tree) => {
+  pepper.onCollide("bird", (bird) => {
     addKaboom(pepper.pos);
     play("chirp", {volume: 0.25});
     shake();
-    //go("lose", score);
-    // push bean
-
     pepper.move(-1200, 0);
-    destroy(tree);
-    if (pepper.pos.x < 0) {
-        go("lose", score);
-    }
+    destroy(bird);
   });
 
   antagonist.onCollide("bird", (tree) => {
@@ -351,25 +343,10 @@ scene("start", () => {
   onTouchStart(() => go("game"));
 });
 
-scene("lose", (score) => {
+scene("end", (endingText) => {
 
   themeSong.stop();
-  // High score is browser based, using localStorage
-  let highScore = localStorage.getItem('highScore');
-  let highScoreText = "";
-  let shakeIt = false;
 
-  if (highScore) {
-    highScoreText = "High Score: " + highScore;
-  }
-
-  let yourScoreText = "Your Score: " + score;
-
-  if (!highScore || highScore < score){
-    localStorage.setItem("highScore", score);
-    highScoreText = "New High Score!";
-    shakeIt = true;
-  }
 
   add([
     sprite("pepper"),
@@ -391,20 +368,20 @@ scene("lose", (score) => {
 
   add([
     text(
-      highScoreText, {
+      endingText, {
         size: 24,
         font: "sink"
       }
     ),
     pos(width() / 2, height() / 2 + 40),
     origin("center"),
-    "highScoreText",
+    "endingText",
   ]);
 
   add([
     text(
-      yourScoreText, {
-        size: 24,
+      "Hit space or tap to begin", {
+        size: 16,
         font: "sink"
       }
     ),
@@ -416,13 +393,6 @@ scene("lose", (score) => {
   onTouchStart(() => go("game"));
 
   onUpdate(() => {
-    if (shakeIt) {
-      // apply random values
-      // let oddOrEven = Math.random() < 0.5 ? -1 : 1;
-      // let a = oddOrEven * (Math.floor(Math.random() * 100));
-      // let b = oddOrEven * (Math.random() * 40);
-      console.log("we should be shaking it");
-    }
   });
 
 });
