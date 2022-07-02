@@ -1,13 +1,15 @@
 const JUMP_FORCE = 800;
 const GRAVITY_FORCE = 2400;
+const MOVESPEED = 200;
+const ENEMY_MOVESPEED = 210;
 const LEVELS = [
   [
     "                                                                                                          ",
-    "                                                                                                          ",
-    "                               ================                                                           ",
-    "                                                                                                          ",
-    "                                                                                                          ",
-    "                             b b                              b                                           ",
+    "                                                                                                  t       ",
+    "                               ================                                                   m       ",
+    "                                                                                                  m       ",
+    "                                                                                                  m       ",
+    "                             b b                              b                                   m       ",
     "                b                                            b                                    g       ",
     "==============lhr===============================lhrlhr=====================lhr==lhr=======================",
   ]
@@ -89,11 +91,14 @@ loadSprite("basetile", "sprites/basetile.png");
 loadSprite("leftHole", "sprites/leftHole.png");
 loadSprite("rightHole", "sprites/rightHole.png");
 loadSprite("hole", "sprites/hole.png");
-loadSprite("gate", "sprites/gate.png");
+loadSprite("gateBottom", "sprites/gateBottom.png");
+loadSprite("gateMiddle", "sprites/gateMiddle.png");
+loadSprite("gateTop", "sprites/gateTop.png");
 loadSprite("background", "sprites/background.png");
 loadSound("jump", "sounds/jump-sound.wav");
 loadSound("doubleJump", "sounds/sfx_movement_jump2.wav");
 loadSound("impact", "sounds/sfx_sounds_impact9.wav");
+loadSound("chirp", "sounds/bird2.wav");
 loadSound("themeSong", "sounds/TechnoTronic2.mp3");
 volume(0.25);
 // debug.inspect = true;
@@ -113,7 +118,7 @@ const levelConfig = {
     scale(0.75),
     area(),
     solid(),
-    move(LEFT, 240),
+    move(LEFT, MOVESPEED),
     "bird"
   ],
   "l": () => [
@@ -128,7 +133,17 @@ const levelConfig = {
     sprite("hole")
   ],
   "g": () => [
-    sprite("gate"),
+    sprite("gateBottom"),
+    area(),
+    "gate"
+  ],
+  "m": () => [
+    sprite("gateMiddle"),
+    area(),
+    "gate"
+  ],
+  "t": () => [
+    sprite("gateTop"),
     area(),
     "gate"
   ],
@@ -172,16 +187,16 @@ scene("game", (levelNumber = 0) => {
     pos(80, 40),
     area(),
     body(),
-    move(RIGHT, 240),
+    move(RIGHT, MOVESPEED),
   ]);
 
   // add the thing chasing
   const antagonist = add([
     sprite("antagonist"),
-    pos(-40, 40),
+    pos(-20, 40),
     area(),
     body(),
-    move(RIGHT, 245),
+    move(RIGHT, ENEMY_MOVESPEED),
     "antagonist",
   ]);
 
@@ -204,24 +219,23 @@ scene("game", (levelNumber = 0) => {
   onKeyPress("space", jump);
   onTouchStart(jump);
 
-  function spawnTree() {
+  function spawnBird() {
     add([
-      rect(12, rand(24, 64)),
+      sprite("bird", {anim: 'idle'}),
+      pos(pepper.pos.x + width(), rand(120, 200)),
+      scale(0.75),
       area(),
-      outline(4),
-      pos(width(), height() - 48),
-      origin("botleft"),
-      color(255, 180, 255),
-      move(LEFT, 240),
-      "tree", // tag name
+      solid(),
+      move(LEFT, MOVESPEED),
+      "bird"
     ]);
     // From the example, infinite recursion
     wait(rand(0.5,2), () => {
-      spawnTree();
+      spawnBird();
     });
   };
 
-  //spawnTree();
+  spawnBird();
 
   let score = 0;
   const scoreLabel = add([
@@ -278,9 +292,9 @@ scene("game", (levelNumber = 0) => {
     }
   });
 
-  pepper.onCollide("tree", (tree) => {
+  pepper.onCollide("bird", (tree) => {
     addKaboom(pepper.pos);
-    play("impact");
+    play("chirp", {volume: 0.25});
     shake();
     //go("lose", score);
     // push bean
@@ -292,9 +306,9 @@ scene("game", (levelNumber = 0) => {
     }
   });
 
-  antagonist.onCollide("tree", (tree) => {
+  antagonist.onCollide("bird", (tree) => {
     addKaboom(antagonist.pos);
-    play("impact");
+    play("chirp", {volume: 0.25});
     antagonist.move(-1200, 0);
     destroy(tree);
   });
