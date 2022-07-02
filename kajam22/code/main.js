@@ -78,6 +78,7 @@ loadSprite("antagonist", "sprites/farmer.png", {
 
 loadSprite("bean", "sprites/bean.png");
 loadSprite("ground", "sprites/ground.png");
+loadSprite("basetile", "sprites/basetile.png");
 loadSprite("background", "sprites/background.png");
 loadSound("jump", "sounds/jump-sound.wav");
 loadSound("doubleJump", "sounds/sfx_movement_jump2.wav");
@@ -91,7 +92,7 @@ const levelConfig = {
   height: 32,
   pos: (0,0),
   "=": () => [
-    sprite("ground"),
+    sprite("basetile"),
     area(),
     solid(),
     "ground"
