@@ -1,7 +1,7 @@
 const JUMP_FORCE = 800;
 const GRAVITY_FORCE = 2400;
 const MOVESPEED = 200;
-const ENEMY_MOVESPEED = 210;
+const ENEMY_MOVESPEED = 230;
 const LEVELS = [
   [
     "                                                                                                          ",
@@ -9,9 +9,9 @@ const LEVELS = [
     "                               ================                                                   m       ",
     "                                                                                                  m       ",
     "                                                                                                  m       ",
-    "                             b b                              b                                   m       ",
-    "                b                                            b                                    g       ",
-    "==============lhr===============================lhrlhr=====================lhr==lhr=======================",
+    "                                                                                                  m       ",
+    "                                                                                                  g       ",
+    "================================================lhrlhr=====================lhr==lhr=======================",
   ]
 ];
 
@@ -222,7 +222,7 @@ scene("game", (levelNumber = 0) => {
   function spawnBird() {
     add([
       sprite("bird", {anim: 'idle'}),
-      pos(pepper.pos.x + width(), rand(120, 200)),
+      pos(pepper.pos.x + width(), rand(140, 210)),
       scale(0.75),
       area(),
       solid(),
@@ -380,7 +380,7 @@ scene("end", (endingText) => {
 
   add([
     text(
-      "Hit space or tap to begin", {
+      "Hit space or tap to retry", {
         size: 16,
         font: "sink"
       }
