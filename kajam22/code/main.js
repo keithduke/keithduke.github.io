@@ -6,9 +6,9 @@ const LEVELS = [
     "                                                                                                ",
     "                               ================                                                 ",
     "                                                                                                ",
-    "                    ~                   ~ ~ ~ ~                                                 ",
-    "                  ~                                                                             ",
-    "                ~                                                                               ",
+    "                    b                   b b b b                                                 ",
+    "                  b                                                                             ",
+    "                b                                                                               ",
     "===============================================  =  ============================================",
   ]
 ];
@@ -50,7 +50,6 @@ loadSprite("pepper", "sprites/pepper.png", {
 	}
 });
 
-// load assets
 loadSprite("antagonist", "sprites/farmer.png", {
 	// The image contains 9 frames layed out horizontally, slice it into individual frames
   scale: 1.5,
@@ -76,6 +75,23 @@ loadSprite("antagonist", "sprites/farmer.png", {
 	}
 });
 
+loadSprite("bird", "sprites/bird.png", {
+	// The image contains 9 frames layed out horizontally, slice it into individual frames
+  scale: 1,
+	sliceX: 4,
+	// Define animations
+	anims: {
+		"idle": {
+			// Starts from frame 0, ends at frame 3
+			from: 0,
+			to: 3,
+			// Frame per second
+			speed: 5,
+			loop: true,
+		}
+	}
+});
+
 loadSprite("bean", "sprites/bean.png");
 loadSprite("ground", "sprites/ground.png");
 loadSprite("basetile", "sprites/basetile.png");
@@ -97,12 +113,12 @@ const levelConfig = {
     solid(),
     "ground"
   ],
-  "~": () => [
-    sprite("ground"),
+  "b": () => [
+    sprite("bird", {anim: 'idle'}),
     area(),
     solid(),
     move(LEFT, 240),
-    "movingGround"
+    "bird"
   ]
 };
 
@@ -221,8 +237,8 @@ scene("game", (levelNumber = 0) => {
     }
   });
 
-  pepper.onCollide("movingGround", (movingGround) => {
-    follow(movingGround);
+  pepper.onCollide("bird", (bird) => {
+    follow(bird);
   });
 
   pepper.onCollide("antagonist", (antagonist) => {
@@ -250,8 +266,9 @@ scene("game", (levelNumber = 0) => {
     destroy(tree);
   });
 
-  antagonist.onCollide("movingGround", (movingGround) => {
-    destroy(movingGround);
+  antagonist.onCollide("bird", (bird) => {
+    destroy(bird);
+    // sqwak sound
   });
 
 });
