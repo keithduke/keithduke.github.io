@@ -2,14 +2,14 @@ const JUMP_FORCE = 800;
 const GRAVITY_FORCE = 2400;
 const LEVELS = [
   [
-    "                                                                                                ",
-    "                                                                                                ",
-    "                               ================                                                 ",
-    "                                                                                                ",
-    "                    b                   b b b b                                                 ",
-    "                  b                                                                             ",
-    "                b                                                                               ",
-    "===============================================  =  ============================================",
+    "                                                                                                          ",
+    "                                                                                                          ",
+    "                               ================                                                           ",
+    "                                                                                                          ",
+    "                                                                                                          ",
+    "                             b b                              b                                           ",
+    "                b                                            b                                    g       ",
+    "==============lhr===============================lhrlhr=====================lhr==lhr=======================",
   ]
 ];
 
@@ -50,20 +50,11 @@ loadSprite("pepper", "sprites/pepper.png", {
 	}
 });
 
-loadSprite("antagonist", "sprites/farmer.png", {
+loadSprite("antagonist", "sprites/newfarmer.png", {
 	// The image contains 9 frames layed out horizontally, slice it into individual frames
-  scale: 1.5,
-	sliceX: 8,
+	sliceX: 9,
 	// Define animations
 	anims: {
-		"idle": {
-			// Starts from frame 0, ends at frame 3
-			from: 0,
-			to: 3,
-			// Frame per second
-			speed: 5,
-			loop: true,
-		},
 		"run": {
 			from: 0,
 			to: 7,
@@ -71,7 +62,7 @@ loadSprite("antagonist", "sprites/farmer.png", {
 			loop: true,
 		},
 		// This animation only has 1 frame
-		"jump": 8
+		"gotcha": 8
 	}
 });
 
@@ -95,6 +86,10 @@ loadSprite("bird", "sprites/bird.png", {
 loadSprite("bean", "sprites/bean.png");
 loadSprite("ground", "sprites/ground.png");
 loadSprite("basetile", "sprites/basetile.png");
+loadSprite("leftHole", "sprites/leftHole.png");
+loadSprite("rightHole", "sprites/rightHole.png");
+loadSprite("hole", "sprites/hole.png");
+loadSprite("gate", "sprites/gate.png");
 loadSprite("background", "sprites/background.png");
 loadSound("jump", "sounds/jump-sound.wav");
 loadSound("doubleJump", "sounds/sfx_movement_jump2.wav");
@@ -115,11 +110,28 @@ const levelConfig = {
   ],
   "b": () => [
     sprite("bird", {anim: 'idle'}),
+    scale(0.75),
     area(),
     solid(),
     move(LEFT, 240),
     "bird"
-  ]
+  ],
+  "l": () => [
+    sprite("leftHole"),
+    area(),
+    solid()
+  ],
+  "r": () => [
+    sprite("rightHole")
+  ],
+  "h": () => [
+    sprite("hole")
+  ],
+  "g": () => [
+    sprite("gate"),
+    area(),
+    "gate"
+  ],
 };
 
 const themeSong = play("themeSong", {loop: true});
@@ -154,7 +166,7 @@ scene("game", (levelNumber = 0) => {
     fixed(),
   ]);
 
-  // add a character to screen
+  // add our runner
   const pepper = add([
     sprite("pepper"),
     pos(80, 40),
@@ -241,8 +253,29 @@ scene("game", (levelNumber = 0) => {
     follow(bird);
   });
 
-  pepper.onCollide("antagonist", (antagonist) => {
+  pepper.onCollide("gate", (gate) => {
     go("lose", score);
+  });
+
+  pepper.onCollide("antagonist", (antagonist) => {
+    // if you havent fallen into a hole
+    if (pepper.pos.y < 185){
+      destroy(pepper);
+      antagonist.play("gotcha");
+
+      add([
+        text("GOTCHA!", {font:"sinko", size: 48}),
+        pos(camPos()),
+        color(255, 0, 0),
+        origin("center"),
+        layer("ui"),
+        lifespan(1, { fade: 0.5 })
+      ]);
+
+      wait(1, () => {
+        go("lose", score);
+      });
+    }
   });
 
   pepper.onCollide("tree", (tree) => {
@@ -268,6 +301,7 @@ scene("game", (levelNumber = 0) => {
 
   antagonist.onCollide("bird", (bird) => {
     destroy(bird);
+    antagonist.move(-1200, 0);
     // sqwak sound
   });
 
@@ -278,11 +312,12 @@ scene("start", () => {
     text(
       "Panic! at the Pepper Patch", {
         size: 24,
-        font: "sink"
+        font: "sinko"
       }
     ),
     pos(width() / 2, height() / 2),
     origin("center"),
+    color(255, 0, 0)
   ]);
 
   add([
@@ -294,6 +329,7 @@ scene("start", () => {
     ),
     pos(width() / 2, height() / 2 + 40),
     origin("center"),
+    color(0, 255, 0)
   ]);
 
   themeSong.play();
