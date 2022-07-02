@@ -55,14 +55,20 @@ loadSprite("antagonist", "sprites/newfarmer.png", {
 
 loadSprite("bird", "sprites/bird.png", {
   scale: 1,
-	sliceX: 4,
+	sliceX: 6,
 	anims: {
 		"idle": {
 			from: 0,
 			to: 3,
 			speed: 5,
 			loop: true,
-		}
+		},
+    "exploded": {
+      from: 4,
+      to: 5,
+      speed: 5,
+      loop: true,
+    }
 	}
 });
 
@@ -264,7 +270,7 @@ scene("game", (levelNumber = 0) => {
       antagonist.play("gotcha");
 
       add([
-        text("GOTCHA!", {font:"sinko", size: 48}),
+        text("GOTCHA!", {font:"sinko", size: 96}),
         pos(camPos()),
         color(255, 0, 0),
         origin("center"),
@@ -279,16 +285,28 @@ scene("game", (levelNumber = 0) => {
   });
 
   pepper.onCollide("bird", (bird) => {
+    destroy(bird);
     play("chirp", {volume: 0.25});
     shake();
     pepper.move(-1200, 0);
-    destroy(bird);
+    add([
+      sprite("bird", {anim: 'exploded'}),
+      pos(bird.pos),
+      scale(0.75),
+      lifespan(1, { fade: 1 })
+    ]);
   });
 
   antagonist.onCollide("bird", (bird) => {
+    destroy(bird);
     play("chirp", {volume: 0.25});
     antagonist.move(-1200, 0);
-    destroy(bird);
+    add([
+      sprite("bird", {anim: 'exploded'}),
+      pos(bird.pos),
+      scale(0.75),
+      lifespan(1, { fade: 1 })
+    ]);
   });
 
   onUpdate(() => {
