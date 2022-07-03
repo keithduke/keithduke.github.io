@@ -342,7 +342,7 @@ scene("start", () => {
 
   add([
     text(
-      "Hit space or tap to begin", {
+      "Press space or tap to begin", {
         size: 16,
         font: "sink"
       }
@@ -372,7 +372,7 @@ scene("howto", () => {
 
   add([
     text(
-      "Hit space or tap to begin", {
+      "Press space or tap to begin", {
         size: 16,
         font: "sink"
       }
@@ -382,13 +382,11 @@ scene("howto", () => {
     color(0, 255, 0)
   ]);
 
-
   onKeyPress("space", () => go("game"));
   onTouchStart(() => go("game"));
 });
 
 scene("end", (endingText) => {
-
   themeSong.stop();
 
   add([
@@ -406,6 +404,7 @@ scene("end", (endingText) => {
       }
     ),
     pos(width() / 2, height() / 2),
+    color(255, 0, 0),
     origin("center"),
   ]);
 
@@ -423,7 +422,7 @@ scene("end", (endingText) => {
 
   add([
     text(
-      "Hit space or tap to retry", {
+      "Press space or tap to retry", {
         size: 16,
         font: "sink"
       }
