@@ -1,16 +1,16 @@
 const JUMP_FORCE = 800;
 const GRAVITY_FORCE = 2400;
 const MOVESPEED = 200;
-const ENEMY_MOVESPEED = 230;
+const ENEMY_MOVESPEED = 220;
 const LEVELS = [
   [
     "                                                                                                          ",
     "                                                                                                  t       ",
-    "                                                                                                  m       ",
     "                               ioooooooooooooop                                                   m       ",
+    "                                 y          y                                                     m       ",
     "a                                y    aaa   y                                                     m       ",
-    "aa                               y   aaaaaa y                                                     m       ",
-    "aaa                              u aaaaaaaa u                                                     g       ",
+    "aa                               y   aaaaaa y                aaaa                                 m       ",
+    "aaa                              u aaaaaaaa u              u aaaa u                               g       ",
     "================================================lhrlhr=====================lhr==lhr=======================",
   ]
 ];
@@ -288,11 +288,12 @@ scene("game", (levelNumber = 0) => {
     destroy(bird);
     play("chirp", {volume: 0.25});
     shake();
-    pepper.move(-1200, 0);
+    pepper.move(-600, 0);
     add([
       sprite("bird", {anim: 'exploded'}),
       pos(bird.pos),
-      scale(0.75),
+      scale(1),
+      move(LEFT, MOVESPEED/2),
       lifespan(1, { fade: 1 })
     ]);
   });
@@ -304,7 +305,8 @@ scene("game", (levelNumber = 0) => {
     add([
       sprite("bird", {anim: 'exploded'}),
       pos(bird.pos),
-      scale(0.75),
+      scale(1),
+      move(LEFT, MOVESPEED/2),
       lifespan(1, { fade: 1 })
     ]);
   });
