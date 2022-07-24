@@ -27,7 +27,7 @@ export default class Game extends Phaser.Scene {
 
   update(){
     if (this.input.activePointer.isDown){
-      this.paddle.x = this.input.activePointer.downX;
+      this.paddle.x = this.input.activePointer.x;
     } else if (this.cursors.left.isDown){
       this.paddle.setVelocityX(-200);
     } else if (this.cursors.right.isDown){
