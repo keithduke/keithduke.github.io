@@ -3,8 +3,8 @@ import GameOver from './scenes/GameOver.js';
 
 export default new Phaser.Game({
   type: Phaser.AUTO,
-  width: 640,
-  height: 256,
+  width: 360,
+  height: 640,
   scene: [Game, GameOver],
   pixelArt: true,
   physics: {

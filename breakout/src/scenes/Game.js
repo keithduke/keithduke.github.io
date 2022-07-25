@@ -19,7 +19,7 @@ export default class Game extends Phaser.Scene {
     this.ball.body.bounce.set(1);
     this.ball.setVelocity(150, -150);
 
-    this.paddle = this.physics.add.sprite(320, 250, 'paddle');
+    this.paddle = this.physics.add.sprite(175, 600, 'paddle');
     this.paddle.body.immovable = true;
 
     this.physics.add.collider(this.ball, this.paddle);
@@ -35,7 +35,7 @@ export default class Game extends Phaser.Scene {
       this.paddle.setVelocityX(200);
     }
 
-    if (this.ball && this.ball.body && this.ball.body.y > 260){
+    if (this.ball && this.ball.body && this.ball.body.y > 640){
       this.ball.destroy();
       console.log("out");
     }
