@@ -37,7 +37,7 @@ export default class Game extends Phaser.Scene {
 
     if (this.ball && this.ball.body && this.ball.body.y > 640){
       this.ball.destroy();
-      console.log("out");
+      this.scene.start('game-over');
     }
 
   };

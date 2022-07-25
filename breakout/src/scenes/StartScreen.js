@@ -16,7 +16,13 @@ export default class StartScreen extends Phaser.Scene {
     this.add.text(width * 0.5, height * 0.5, 'Press button',{fontsize:48})
       .setOrigin(0.5);
 
-    this.add.sprite(width * 0.5, height - 175, 'startButton');
+    let startButton = this.add.sprite(width * 0.5, height - 175, 'startButton');
+    startButton.setInteractive();
+
+    startButton.on('pointerdown', function() {
+      console.log('clicked');
+      this.scene.start('game');
+    }, this);
   };
 
 }
