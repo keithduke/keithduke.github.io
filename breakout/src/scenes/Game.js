@@ -19,7 +19,8 @@ export default class Game extends Phaser.Scene {
     this.ball.body.bounce.set(1);
     this.ball.setVelocity(150, -150);
 
-    this.paddle = this.physics.add.sprite(175, 600, 'paddle');
+    const height = this.scale.height;
+    this.paddle = this.physics.add.sprite(175, height - 175, 'paddle');
     this.paddle.body.immovable = true;
 
     this.physics.add.collider(this.ball, this.paddle);
