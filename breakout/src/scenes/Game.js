@@ -1,6 +1,7 @@
 export default class Game extends Phaser.Scene {
   ball;
   paddle;
+  bricks;
   cursors;
 
   constructor(){
@@ -10,6 +11,7 @@ export default class Game extends Phaser.Scene {
   preload(){
     this.load.image('ball', 'assets/ball.png');
     this.load.image('paddle', 'assets/paddle.png');
+    this.load.image('brick', 'assets/brick.png');
     this.cursors = this.input.keyboard.createCursorKeys();
   };
 
@@ -25,6 +27,8 @@ export default class Game extends Phaser.Scene {
 
     this.physics.add.collider(this.ball, this.paddle);
     this.physics.world.checkCollision.down = false;
+
+    this.initBricks();
   };
 
   update(){
@@ -40,6 +44,40 @@ export default class Game extends Phaser.Scene {
       this.ball.destroy();
       this.scene.start('game-over');
     }
+  };
 
+  ballHitBrick(ball, brick){
+    brick.destroy();
+  }
+
+  initBricks(){
+    const brickInfo = {
+      width: 32,
+      height: 20,
+      count: {
+        row: 3,
+        col: 7
+      },
+      offset: {
+        top: 32,
+        left: 60
+      },
+      padding: 10
+    };
+
+    this.bricks = this.add.group();
+
+    for (let c=0; c<brickInfo.count.col; c++){
+      for (let r=0; r<brickInfo.count.row; r++){
+        var brickX = (c * (brickInfo.width + brickInfo.padding)) + brickInfo.offset.left;
+        var brickY = (r * (brickInfo.height + brickInfo.padding)) + brickInfo.offset.top;
+
+        let newBrick = this.physics.add.sprite(brickX, brickY, 'brick');
+        newBrick.body.immovable = true;
+        this.bricks.add(newBrick);
+      };
+    };
+
+    this.physics.add.collider(this.ball, this.bricks, this.ballHitBrick);
   };
 }
