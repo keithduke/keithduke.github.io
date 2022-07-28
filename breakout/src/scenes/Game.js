@@ -23,15 +23,17 @@ export default class Game extends Phaser.Scene {
 
     const height = this.scale.height;
     this.paddle = this.physics.add.sprite(175, height - 200, 'paddle');
+    //this.paddle.setScale(10);
     this.paddle.body.immovable = true;
 
-    this.physics.add.collider(this.ball, this.paddle);
+    this.physics.add.collider(this.ball, this.paddle, this.ballHitPaddle);
     this.physics.world.checkCollision.down = false;
 
     this.initBricks();
   };
 
   update(){
+    // check player movement
     if (this.input.activePointer.isDown){
       this.paddle.x = this.input.activePointer.x;
     } else if (this.cursors.left.isDown){
@@ -40,13 +42,32 @@ export default class Game extends Phaser.Scene {
       this.paddle.setVelocityX(200);
     }
 
+    // check if the ball is out of bounds
     if (this.ball && this.ball.body && this.ball.body.y > 640){
+      this.ball.destroy();
+      this.scene.start('game-over');
+    }
+
+    // did we win?
+    if (this.bricks.countActive() == 0){
+      console.log("we won");
       this.ball.destroy();
       this.scene.start('game-over');
     }
   };
 
+  ballHitPaddle(ball, paddle){
+    ball.body.velocity.x = -1*5*(paddle.x-ball.x);
+  }
+
   ballHitBrick(ball, brick){
+    let randomVal = Phaser.Math.Between(0,15);
+    console.log(randomVal);
+    if (randomVal === 15){
+      console.log("DROP +!");
+    } else if (randomVal === 14) {
+      console.log("DROP -!");
+    }
     brick.destroy();
   }
 
