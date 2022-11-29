@@ -2,9 +2,8 @@
   Web designer: Keith Duke
   Web developer: Keith Duke
 	Linkedin: https://www.linkedin.com/in/keith-duke-8488345/
-	Location: Nashville, TN
 
 /* SITE */
-	Last update: 2021/06/02
+	Last update: 2022/11/29
 	Doctype: HTML5
 	IDE: Terminal, Vim, Firefox, Photoshop
