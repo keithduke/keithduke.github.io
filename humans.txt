@@ -1,9 +1,9 @@
 /* TEAM */
   Web designer: Keith Duke
   Web developer: Keith Duke
-	Linkedin: https://www.linkedin.com/in/keith-duke-8488345/
+  Linkedin: https://www.linkedin.com/in/keith-duke-8488345/
 
 /* SITE */
-	Last update: 2022/11/29
-	Doctype: HTML5
-	IDE: Terminal, Vim, Firefox, Photoshop
+  Last update: 2022/11/29
+  Doctype: HTML5
+  IDE: Terminal, Vim, Firefox, Photoshop
