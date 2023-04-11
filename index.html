@@ -148,23 +148,11 @@
         color: rgba(217, 78, 49);
         top: 0;
         transform-origin: left;
-        animation: random-scale-rotate 1s ease-in-out;
       }
       .jitter, .jittery {
         text-rendering: optimizeLegibility;
         display:inline;
         position: absolute;
-      }
-      @keyframes random-scale-rotate {
-        0% {
-          transform: scale(1) rotate(0deg);
-        }
-        50% {
-          transform: scale(1.5) rotate(90deg);
-        }
-        100% {
-          transform: scale(1) rotate(180deg);
-        }
       }
       #templateModal {
         position: fixed;
@@ -294,8 +282,19 @@
             let a = oddOrEven * (Math.floor(Math.random() * 100));
             let b = oddOrEven * (Math.random() * 40);
             let c = Math.random();
-            textClone.style.transform = 'rotate(' + a + 'deg) scale('+ b +')';
+            //textClone.style.transform = 'rotate(' + a + 'deg) scale('+ b +')';
             textClone.style.opacity = c;
+            const keyframe = `@keyframes animate-${i} {
+              0% { transform: rotate(0) scale(0); }
+              50% { transform: rotate(${a/2}deg) scale(${b/2}); }
+              100% { transform: rotate(${a}deg) scale(${b}); }
+            }`;
+
+            const style = document.createElement('style');
+            style.innerHTML = keyframe;
+            document.head.appendChild(style);
+
+            textClone.style.animation = `animate-${i} 2s linear forwards`;
             if (i === 19) {console.log('Art complete!')}
 
           }, 250 * i);
