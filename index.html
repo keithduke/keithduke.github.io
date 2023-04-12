@@ -1,6 +1,16 @@
 <!doctype html>
 <html lang="en">
   <head>
+    <!--
+      Hi! thanks for checking out the source of this page. If your curious about why I did things 
+      like I did feel free to ask, or if you have suggestions to make it better. I include the css
+      and all the js in this one file on purpose, so rather than the browser making multiple requests 
+      it just gets the image, which I plan to some day replace with an SVG so I can include everything 
+      in one file, and that file will be less than 14k. It's for speed and a personal challenge.
+
+      Anywho thanks again for checking this out, I am constantly tweaking things, this is part of my 
+      digital garden.
+    -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>The personal website of web developer Keith Duke.</title>
@@ -73,10 +83,11 @@
         text-shadow: 1px 1px #333;
       }
       #about h2 {
-        transform: rotate(90deg) translateY(100%);
         position: absolute;
         font-size: 30vh;
         color: rgba(48, 38, 29, 0.1);
+        margin-top: -.5em;
+        transform-origin: left;
       }
       #about p {
         position: relative;
@@ -89,9 +100,6 @@
         line-height: 1.5em;
         text-rendering: optimizeLegibility;
       }
-      #about #intro {
-        font-size: 1.5em;
-      }
       #about p:last-child {
         margin-bottom: 0;
       }
@@ -103,7 +111,7 @@
       }
       footer {
         background-color: yellow;
-        width:100%;
+        width:100vw;
         padding: 5vh 0;
         position: relative;
         align-items: center;
@@ -203,8 +211,8 @@
 
       <section id="about">
 
-        <h1>Hello, my name is Keith Duke.</h1>
         <h2>About</h2>
+        <h1>Hello, my name is Keith Duke.</h1>
 
         <p>I am a web developer with over 13 years of experience working in the online media industry. 
         For a decade I served as a front-end engineer for <a href="https://cbsinteractive.com/about/">CBS Interactive</a>
@@ -258,13 +266,18 @@
         window.observer = new IntersectionObserver((entries) => {
           entries.forEach(entry => {
             if (entry.isIntersecting) {
-              // Execute your function here
-              console.log('Beginning art!');
               jitter(footer);
             }
           });
         });
         observer.observe(footer);
+
+        const element = document.querySelector('#about h2');
+        const max_rotation = 90;
+        window.addEventListener('scroll', () => {
+          let rotation_angle = Math.min(window.scrollY / 10, max_rotation);
+          element.style.transform = `rotate(${rotation_angle}deg)`;
+        });
       }());
 
       function jitter(footer){
@@ -295,8 +308,6 @@
             document.head.appendChild(style);
 
             textClone.style.animation = `animate-${i} 2s linear forwards`;
-            if (i === 19) {console.log('Art complete!')}
-
           }, 250 * i);
         }
       }
