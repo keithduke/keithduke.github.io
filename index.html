@@ -85,6 +85,7 @@
       }
       #about h2 {
         position: absolute;
+        aria-hidden: true;
         font-size: 30vh;
         color: rgba(48, 38, 29, 0.1);
         margin-top: -.5em;
@@ -98,7 +99,7 @@
         color: #10100f;
         font-size: clamp(100%, 1rem + 1vw, 24px);
         letter-spacing: -.015em;
-        line-height: 1.5em;
+        line-height: 1.5;
         text-rendering: optimizeLegibility;
       }
       #about p:last-child {
@@ -290,12 +291,13 @@
             let textClone = textToEffect.cloneNode(true);
             textClone.id = `colophon-${i}`;
             textClone.classList.add('jittery');
+            textClone.ariaHidden = "true";
             textToEffect.before(textClone);
             // apply random values
-            let oddOrEven = Math.random() < 0.5 ? -1 : 1;
-            let a = oddOrEven * (Math.floor(Math.random() * 100));
-            let b = oddOrEven * (Math.random() * 40);
-            let c = Math.random();
+            const oddOrEven = Math.random() < 0.5 ? -1 : 1;
+            const a = oddOrEven * (Math.floor(Math.random() * 100));
+            const b = oddOrEven * (Math.random() * 40);
+            const c = Math.random();
             //textClone.style.transform = 'rotate(' + a + 'deg) scale('+ b +')';
             textClone.style.opacity = c;
             const keyframe = `@keyframes animate-${i} {
@@ -309,7 +311,7 @@
             document.head.appendChild(style);
 
             textClone.style.animation = `animate-${i} 2s linear forwards`;
-          }, 250 * i);
+          }, i * i);
         }
       }
 
