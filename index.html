@@ -164,19 +164,18 @@
         display:inline;
         position: absolute;
       }
-      #templateModal {
+      #thanksMessage {
         position: fixed;
         top: 5vw;
-        right: 5vw;
-        width: 20vw;
-        min-width: 200px;
-        z-index: 100;
+        left: 5vw;
+        padding: .5em;
         border: 2px solid #333;
         border-radius: 3%;
         background-color: rgba(255, 255, 255, 0.9);
         text-align: center;
       }
-      #templateModal button {
+      #thanksMessage button {
+        display: inline-block;
         float: right;
         cursor: pointer;
         margin: 1em;
@@ -187,18 +186,17 @@
         font-family: monospace;
         text-align: center;
         text-decoration: none;
-        display: inline-block;
       }
-      #templateModal aside {
+      #thanksMessage p {
         clear: both;
         margin-bottom: 3em;
       }
-      #templateModal p {
+      #thanksMessage p {
         font-weight: bolder;
         font-size: 18px;
         padding: 1em;
       }
-      #templateModal p #callout {
+      #thanksMessage p #callout {
         display: block;
         font-size: 200%;
         font-weight: bold;
@@ -243,21 +241,10 @@
       <p>&#169; 2023 Keith Duke</p>
     </footer>
 
-    <template id="modal">
-      <div id="templateModal">
-        <button onclick="closeModal()">X</button>
-        <aside>
-          <script>
-            function closeModal() {
-              const modal = document.getElementById("templateModal");
-              modal.remove();
-              _state['closedModal'] = true;
-            }
-          </script>
-          <p><span id="callout">Thanks</span> for stopping by!</p>
-        </aside>
-      </div>
-    </template>
+    <dialog id="thanksMessage">
+      <button onclick="thanksMessage.close()">Close</button>
+      <p><span id="callout">Thanks</span> for stopping by!</p>
+    </dialog>
 
     <script>
       (function() {
@@ -318,12 +305,10 @@
       // On mouse leave, assume they are navigating and show modal
       function showModal() {
         if (!_state['shownModal'] === true){
-          const template = document.getElementById("modal");
-          const clone = template.content.cloneNode(true);
-          const container = document.body;
-          container.prepend(clone);
-          _state['shownModal'] = true;
           document.body.removeEventListener('mouseleave', showModal, false);
+          _state['shownModal'] = true;
+          const modal = document.getElementById("thanksMessage");
+          modal.showModal();
         }
       }
     </script>
