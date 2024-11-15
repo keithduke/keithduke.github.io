@@ -4,6 +4,6 @@
   Linkedin: https://www.linkedin.com/in/keith-duke-8488345/
 
 /* SITE */
-  Last update: 2023/01/07
+  Last update: 2024/11/15
   Doctype: HTML5
   IDE: Terminal, Vim, Firefox, Photoshop
