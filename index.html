@@ -30,8 +30,10 @@
         padding: 0;
       }
       html, body {
-        height:100%;
-        width:100%;
+        min-height:100vh;
+        display: flex;
+        flex-direction: column;
+        width:100vw;
         font-family: Georgia, serif;
         font-size: 1.125em;
         scroll-behavior: smooth;
@@ -77,7 +79,7 @@
         width: 100vw;
         padding: 10vh 0;
         background-color: rgba(217, 78, 49);
-        overflow: hidden;
+        overflow-x: hidden;
       }
       #about h1 {
         width: 85%;
@@ -88,7 +90,7 @@
       #about h2 {
         position: absolute;
         aria-hidden: true;
-        font-size: 30vh;
+        font-size: 25vh;
         color: rgba(48, 38, 29, 0.1);
         margin-top: -.5em;
         transform-origin: left;
@@ -116,9 +118,9 @@
       footer {
         background-color: yellow;
         width:100vw;
+        height: min-content;
         padding: 5vh 0;
         position: relative;
-        align-items: center;
         overflow-y: hidden;
         overflow-x: hidden;
       }
