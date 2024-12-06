@@ -81,6 +81,10 @@
         background-color: rgba(217, 78, 49);
         overflow-x: hidden;
       }
+      #about li div {
+        width: 85%;
+        margin: 0 auto 1em auto;
+      }
       #about h1 {
         width: 85%;
         margin: 0 auto 1em auto;
@@ -205,6 +209,26 @@
         font-size: 200%;
         font-weight: bold;
       }
+      #javascript {
+        background-color: #ff0;
+        padding: 1em;
+      }
+      #python {
+        background-color: #4584b6;
+        padding: 1em;
+      }
+      #php {
+        background-color: #aeb2d5;
+        padding: 1em;
+      }
+      #css {
+        background-color: #663399;
+        padding: 1em;
+      }
+      #html {
+        background-color: #e34f26;
+        padding: 1em;
+      }
     </style>
   </head>
   <body>
@@ -228,10 +252,38 @@
         on front-end technologies for
         <a href="https://cbsinteractive.com/about/">CBS Interactive (now Paramount)</a>
         as both a Lead and Senior on numerous brands. I have worked with most
-        delivery technologies, such as PHP and frameworks like Laravel,
-         CodeIgniter, Zend and Python with Django. Javascript and Node with
-         Vue/Nuxt and React. CSS with Sass, BEM, CSS Modules and major
-         frameworks like bootstrap.</p>
+        delivery technologies, such as...</p>
+        <ul>
+          <li>
+            <div id="javascript">
+              <h3>Javascript</h3>
+              <p>With Node and frameworks like Vue/Nuxt and React/Next.</p>
+            </div>
+          </li>
+          <li>
+            <div id="python">
+              <h3>Python</h3>
+              <p>With frameworks like Django and Flask.</p>
+            </div>
+          </li>
+          <li>
+            <div id="php">
+              <h3>PHP</h3>
+              <p>WIth frameworks like Laravel, CodeIgniter and Zend.</p>
+            </div>
+          </li>
+          <li>
+            <div id="css">
+              <h3>CSS</h3>
+              <p>With Sass, BEM and major frameworks like Bootstrap and Tailwind.</p>
+            </div>
+          </li>
+          <li>
+            <div id="html">
+              <h3>HTML</h3>
+              <p>With Web Components and templating engines like Twig, Nunjucks and Jinja.</p>
+            </div>
+          </li>
 
         <p>I completed my Bachelor of Arts in
         <a href="https://www.academyart.edu/academics/web-design/">Web Design & New Media</a>
@@ -276,14 +328,7 @@
         document.body.addEventListener('mouseleave', showModal, false);
         _state['online'] = true;
         const footer = document.querySelector('footer');
-        window.observer = new IntersectionObserver((entries) => {
-          entries.forEach(entry => {
-            if (entry.isIntersecting) {
-              jitter(footer);
-            }
-          });
-        });
-        observer.observe(footer);
+        jitter(footer);
 
         const element = document.querySelector('#about h2');
         const max_rotation = 90;
@@ -294,7 +339,6 @@
       }());
 
       function jitter(footer){
-        window.observer.unobserve(footer);
         const textToEffect = document.getElementById("colophon"); 
 
         for(let i=0; i < 20; i++){
@@ -320,7 +364,7 @@
             style.innerHTML = keyframe;
             document.head.appendChild(style);
 
-            textClone.style.animation = `animate-${i} 2s linear forwards`;
+            textClone.style.animation = `animate-${i} .25s linear forwards`;
           }, i * i);
         }
       }
