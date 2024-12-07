@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="author" content="Keith Duke">
+  <meta name="description" content="The personal website of web developer Keith Duke.">
+  <meta property="og:image" content="https://keithduke.net/8colorme.png">
+  <meta property="og:description" content="The personal website of web developer Keith Duke.">
+  <meta property="og:title" content="Keith Duke">
+  <title>The personal website of web developer Keith Duke.</title>
+  <link rel="icon" type="image/png" sizes="192x192" href="/icon.png">
+</head>
+
+<body>
+  <main>
+    <section id="me">
+      <img src="8colorme.webp" width="400" height="558"
+        alt="A digital scan of a four color silk screen self portrait of myself done on paper."
+        title="A digital scan of a four color silk screen self portrait of myself done on paper.">
+    </section>
+
+    <section id="about">
+
+      <h2>About</h2>
+      <h1>Hello, my name is Keith Duke.</h1>
+
+      <p>I am a web developer with over 13 years of experience working in the
+        online media industry. For a decade I served as a full stack engineer focused
+        on front-end technologies for
+        <a href="https://cbsinteractive.com/about/">CBS Interactive (now Paramount)</a>
+        as both a Lead and Senior on numerous brands. I have worked with most
+        delivery technologies, such as...
+      </p>
+
+      <ul>
+        <li>
+          <p>JavaScript/TypeScript with Node and frameworks like Vue/Nuxt, React/Next, Vite and Astro.</p>
+        </li>
+        <li>
+          <p>Python with frameworks like Django and Flask.</p>
+        </li>
+        <li>
+          <p>PHP wIth frameworks like Laravel, CodeIgniter and Zend.</p>
+        </li>
+        <li>
+          <p>CSS with Sass, BEM and major frameworks like Bootstrap and Tailwind.</p>
+        </li>
+      </ul>
+
+      <p>I completed my Bachelor of Arts in
+        <a href="https://www.academyart.edu/academics/web-design/">Web Design & New Media</a>
+        at the Academy of Art University in San Francisco. I previously
+        completed coursework in <a href="https://mtsu.edu/csc/">Computer Science</a>
+        at Middle Tennessee State University. I have a background and love for
+        craft and restoration, having worked professionally in wood and glass
+        restoration. I fancy myself a writer,
+        <a href="https://stackoverflow.com/questions/522828/is-code-for-computers-or-for-people">coding
+          is an act of writing to two audiences</a>.
+      </p>
+
+      <p>Read more of my writing, coding and design at <a href="https://www.herelately.com">Here Lately</a>.</p>
+
+      <p>Reach out to me on
+        <a href="https://www.linkedin.com/in/keith-duke-8488345/">Linkedin</a>,
+        <a href="https://github.com/keithduke">Github</a>,
+        <a rel="me" href="https://hachyderm.io/@kduke">Mastodon</a>
+        and <a href="https://bsky.app/profile/kmduke.bsky.social">Bluesky</a>.
+      </p>
+    </section>
+  </main>
+
+  <footer>
+    <h2 id="colophon" class="jitter">Colophon</h2>
+
+    <p>This website is created with <a href="https://vitejs.dev/">Vite</a> and
+      powered by <a href="https://pages.github.com/">GitHub Pages</a>.</p>
+
+    <p>&#169; 2024 Keith Duke</p>
+  </footer>
+
+  <dialog id="thanksMessage">
+    <button onclick="thanksMessage.close()">Close</button>
+
+    <p><span id="callout">Thanks</span> for stopping by!</p>
+  </dialog>
+
+  <div id="app"></div>
+  <script type="module" src="/src/main.ts"></script>
+</body>
+
+</html>
