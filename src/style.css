@@ -68,7 +68,7 @@ section {
   overflow-x: hidden;
 }
 
-#about h1 {
+#about h1, h3 {
   width: 90%;
   margin: 0 auto 1em auto;
   color: #fdfaeb;
