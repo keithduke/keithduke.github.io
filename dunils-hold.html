@@ -92,6 +92,34 @@
       color: rgba(255, 255, 255, 0.6);
       font-size: 0.9rem;
     }
+
+    a {
+      color: #88ccff;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    a:hover {
+      color: #aaddff;
+    }
+
+    .support-link {
+      display: inline-block;
+      margin-top: 0.5rem;
+      padding: 0.75rem 1.5rem;
+      background: rgba(136, 204, 255, 0.1);
+      border: 1px solid rgba(136, 204, 255, 0.3);
+      border-radius: 8px;
+      color: #88ccff;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+
+    .support-link:hover {
+      background: rgba(136, 204, 255, 0.15);
+      border-color: rgba(136, 204, 255, 0.5);
+      transform: translateY(-1px);
+    }
   </style>
 </head>
 
@@ -173,6 +201,19 @@
         Because no data is collected, Dunil's Hold does not share any information with third parties.
         If you have privacy questions or need further clarification, reach out via the contact information provided
         on the main project website.
+      </p>
+    </section>
+
+    <section id="support">
+      <h2>Support & Issues</h2>
+      <p>
+        Found a bug or have a feature request? Visit the project on GitHub to report issues,
+        discuss features, or browse existing reports.
+      </p>
+      <p>
+        <a href="https://github.com/keithduke/dunils-hold" target="_blank" rel="noopener noreferrer" class="support-link">
+          View Project on GitHub →
+        </a>
       </p>
     </section>
   </main>
