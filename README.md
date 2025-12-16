@@ -1,2 +1,2 @@
-My personal website. Built with Vite.
+My personal website. Built with core web technology.
 

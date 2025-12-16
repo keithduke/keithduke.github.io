@@ -1,9 +1,5 @@
-import "./style.css";
-
-document.querySelector<HTMLDivElement>("#app")!.innerHTML = ``;
-
 (function () {
-  const _state: { shownModal?: boolean } = {};
+  const _state = {};
   document.body.addEventListener("mouseleave", showModal, false);
   jitter();
 
@@ -12,7 +8,7 @@ document.querySelector<HTMLDivElement>("#app")!.innerHTML = ``;
   window.addEventListener("scroll", () => {
     let rotation_angle = Math.min(window.scrollY / 10, max_rotation);
     if (element) {
-      (element as HTMLElement).style.transform = `rotate(${rotation_angle}deg)`;
+      element.style.transform = `rotate(${rotation_angle}deg)`;
     }
   });
 
@@ -23,7 +19,7 @@ document.querySelector<HTMLDivElement>("#app")!.innerHTML = ``;
       _state["shownModal"] = true;
       const modal = document.getElementById("thanksMessage");
       if (modal) {
-        (modal as HTMLDialogElement).showModal();
+        modal.showModal();
       }
     }
   }
@@ -35,7 +31,7 @@ function jitter() {
   if (textToEffect) {
     for (let i = 0; i < 20; i++) {
       setTimeout(function () {
-        let textClone = textToEffect.cloneNode(true) as HTMLElement;
+        let textClone = textToEffect.cloneNode(true);
         textClone.id = `colophon-${i}`;
         textClone.classList.add("jittery");
         textClone.ariaHidden = "true";
