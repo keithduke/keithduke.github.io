@@ -14,7 +14,7 @@
 
   // On mouse leave, assume they are navigating and show modal
   function showModal() {
-    if (!_state["shownModal"] === true) {
+    if (!_state["shownModal"]) {
       document.body.removeEventListener("mouseleave", showModal, false);
       _state["shownModal"] = true;
       const modal = document.getElementById("thanksMessage");

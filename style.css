@@ -1,3 +1,14 @@
+:root {
+  --color-cream: #fdfaeb;
+  --color-rust: rgba(217, 78, 49);
+  --color-dark-rust: rgba(48, 38, 29, 0.1);
+  --color-yellow: yellow;
+  --color-link: rgb(249, 249, 136);
+  --color-link-hover: rgb(249, 249, 21);
+  --color-text-light: ghostwhite;
+  --color-shadow: #333;
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -8,7 +19,7 @@ body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  width: 100vw;
+  width: 100%;
   font-family: Georgia, serif;
   font-size: 1.125em;
   scroll-behavior: smooth;
@@ -19,16 +30,20 @@ h2 {
   font-family: "Tahoma", sans-serif;
 }
 
+a {
+  position: relative;
+}
+
 a:link {
-  color: rgb(249, 249, 136);
+  color: var(--color-link);
 }
 
 a:visited {
-  color: rgb(249, 249, 136);
+  color: var(--color-link);
 }
 
 a:hover {
-  color: rgb(249, 249, 21);
+  color: var(--color-link-hover);
 }
 
 a:focus {
@@ -42,13 +57,13 @@ a:active {
 
 section {
   display: block;
-  width: 100vw;
+  width: 100%;
 }
 
 #me {
   display: flex;
   min-height: 100vh;
-  background-color: #fdfaeb;
+  background-color: var(--color-cream);
   justify-content: center;
   align-items: center;
 }
@@ -62,23 +77,23 @@ section {
 }
 
 #about {
-  width: 100vw;
+  width: 100%;
   padding: 10vh 0;
-  background-color: rgba(217, 78, 49);
+  background-color: var(--color-rust);
   overflow-x: hidden;
 }
 
 #about h1, h3 {
   width: 90%;
   margin: 0 auto 1em auto;
-  color: #fdfaeb;
-  text-shadow: 1px 1px #333;
+  color: var(--color-cream);
+  text-shadow: 1px 1px var(--color-shadow);
 }
 
 #about h2 {
   position: absolute;
   font-size: 25vh;
-  color: rgba(48, 38, 29, 0.1);
+  color: var(--color-dark-rust);
   margin-top: -.5em;
   transform-origin: left;
 }
@@ -88,8 +103,8 @@ section {
   position: relative;
   z-index: 2;
   margin: 0 auto 1em auto;
-  color: ghostwhite;
-  font-size: clamp(100%, 1rem + 1vw, 24px);
+  color: var(--color-text-light);
+  font-size: clamp(1rem, 1rem + 1vw, 1.5rem);
   letter-spacing: -.015em;
   line-height: 1.5;
   text-rendering: optimizeLegibility;
@@ -100,13 +115,12 @@ section {
 }
 
 footer {
-  background-color: yellow;
-  width: 100vw;
+  background-color: var(--color-yellow);
+  width: 100%;
   height: min-content;
   padding: 5vh 0;
   position: relative;
-  overflow-y: hidden;
-  overflow-x: hidden;
+  overflow: hidden;
 }
 
 footer a:link {
@@ -143,7 +157,7 @@ footer p {
 }
 
 .jitter {
-  color: rgba(217, 78, 49, 1);
+  color: var(--color-rust);
   z-index: 2;
   font-size: 1em;
   top: -4%;
@@ -151,7 +165,7 @@ footer p {
 }
 
 .jittery {
-  color: rgba(217, 78, 49);
+  color: var(--color-rust);
   top: 0;
   transform-origin: left;
 }
