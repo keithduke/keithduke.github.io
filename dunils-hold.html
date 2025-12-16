@@ -120,6 +120,18 @@
       border-color: rgba(136, 204, 255, 0.5);
       transform: translateY(-1px);
     }
+
+    /* Mobile Fixes for #hero */
+    @media (max-width: 650px) {
+      #hero {
+        grid-template-columns: 1fr; /* Stack items vertically */
+        text-align: center;
+        gap: 1.5rem;
+      }
+      #hero img {
+        margin: 0 auto; /* Center the image */
+      }
+    }
   </style>
 </head>
 
