@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Road Racer</title>
+    <link rel="stylesheet" href="rogueRacer.css">
+  </head>
+  <body>
+    <div id="gameContainer">
+      <canvas id="gameCanvas"></canvas>
+      <div id="controls">
+        <div id="joystickContainer"></div>
+        <div id="buttonsContainer">
+          <button id="gasButton" class="control-button">GAS</button>
+          <button id="brakeButton" class="control-button">BRAKE</button>
+        </div>
+      </div>
+    </div>
+    <div id="speedometer">SPEED: 0</div>
+
+    <script src="./three.min.js"></script>
+    <script src="./nipplejs.min.js"></script>
+    <script src="rogueRacer.js"></script>
+  </body>
+</html>

@@ -1,0 +1,79 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: linear-gradient(180deg, #221b2f 0%, #1a1a2e 100%);
+  font-family: "Courier New", monospace;
+  overflow: hidden;
+  touch-action: none;
+}
+
+#gameContainer {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+#gameCanvas {
+  width: 100vw;
+  height: 100vw;
+  max-height: 100vh;
+  display: block;
+  background: #000;
+}
+
+#controls {
+  flex: 1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.8);
+}
+
+#joystickContainer {
+  width: 100px;
+  height: 100px;
+  position: relative;
+}
+
+#buttonsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.control-button {
+  width: 80px;
+  height: 60px;
+  border: 2px solid #00ffff;
+  background: rgba(0, 255, 255, 0.2);
+  color: #00ffff;
+  font-family: "Courier New", monospace;
+  font-weight: bold;
+  border-radius: 8px;
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.1s;
+}
+
+.control-button:active,
+.control-button.active {
+  background: rgba(0, 255, 255, 0.6);
+  transform: scale(0.95);
+}
+
+#speedometer {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  color: #ff4444;
+  font-family: "Courier New", monospace;
+  font-size: 18px;
+  font-weight: bold;
+  text-shadow: 0 0 15px #ff0000, 0 0 30px #ff0000;
+}
