@@ -1,0 +1,230 @@
+/* ════════════════════════════════════════════
+   PAPER.CSS — The writing surface
+   contenteditable, no framework overrides.
+════════════════════════════════════════════ */
+
+/* ─── Paper Wrap (scrollable stage) ─────── */
+.paper-wrap {
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 40px 24px 80px;
+  display: flex;
+  justify-content: center;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* ─── The Paper ─────────────────────────── */
+.paper {
+  position: relative;
+  width: 100%;
+  max-width: 680px;
+  min-height: calc(100vh - var(--topbar-h) - var(--bottombar-h) - 80px);
+  background: var(--paper-warm);
+  box-shadow:
+    0 1px 1px rgba(0,0,0,0.06),
+    0 2px 4px rgba(0,0,0,0.08),
+    0 4px 12px rgba(0,0,0,0.10),
+    0 12px 32px rgba(0,0,0,0.12),
+    0 24px 64px rgba(0,0,0,0.10);
+  border-radius: 2px;
+  border-left: 1px solid var(--paper-edge);
+  border-right: 1px solid var(--paper-edge);
+}
+
+/* ─── Paper texture ──────────────────────── */
+.paper-texture {
+  position: absolute;
+  inset: 0;
+  border-radius: 2px;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.4;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.08'/%3E%3C/svg%3E");
+  background-size: 256px 256px;
+  mix-blend-mode: multiply;
+}
+
+/* Subtle ruled lines */
+.paper::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent,
+    transparent calc(1.7em * 1.7 - 1px),
+    rgba(180, 160, 130, 0.10) calc(1.7em * 1.7 - 1px),
+    rgba(180, 160, 130, 0.10) calc(1.7em * 1.7)
+  );
+  background-position: 0 48px;
+}
+
+/* ─── Editor Mount ───────────────────────── */
+.editor-mount {
+  position: relative;
+  z-index: 2;
+  padding: 48px 56px 64px;
+}
+
+/* ─── The contenteditable surface ───────── */
+.editor-surface {
+  display: block;
+  width: 100%;
+  min-height: 400px;
+  outline: none;
+  border: none;
+  background: transparent;
+
+  font-family: var(--font-mono);
+  font-size: 17px;
+  line-height: 1.75;
+  color: var(--ink);
+
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  white-space: pre-wrap;
+
+  caret-color: var(--ink-soft);
+
+  /* Smooth cursor */
+  cursor: text;
+}
+
+/* Placeholder */
+.editor-surface.empty::before {
+  content: attr(data-placeholder);
+  color: var(--ink-ghost);
+  font-style: italic;
+  pointer-events: none;
+  position: absolute;
+}
+
+/* Selection */
+.editor-surface ::selection {
+  background: rgba(160, 120, 60, 0.22);
+}
+
+/* Block elements typed by user */
+.editor-surface div {
+  min-height: 1.75em;
+}
+
+/* ─── Decoration marks ───────────────────── */
+mark[data-decoration] {
+  background: transparent;
+  padding: 0;
+  border-radius: 0;
+}
+
+.deco-spell {
+  text-decoration: underline;
+  text-decoration-color: var(--bad);
+  text-decoration-style: wavy;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+.deco-grammar {
+  text-decoration: underline;
+  text-decoration-color: var(--warn);
+  text-decoration-style: wavy;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+.deco-style {
+  text-decoration: underline;
+  text-decoration-color: #5a7abf;
+  text-decoration-style: dotted;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+/* ─── Markdown mode: subtle syntax hints ─── */
+/* When data-mode="md" apply very light visual cues */
+.editor-surface[data-mode="md"] {
+
+}
+
+/* ─── Markdown Preview ───────────────────── */
+.preview-wrap {
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  padding: 40px 24px 80px;
+  display: flex;
+  justify-content: center;
+}
+
+.preview-paper {
+  padding: 48px 56px 64px;
+}
+
+.preview-content {
+  position: relative;
+  z-index: 2;
+  font-family: var(--font-mono);
+  font-size: 17px;
+  line-height: 1.75;
+  color: var(--ink);
+}
+
+.preview-content h1,
+.preview-content h2,
+.preview-content h3,
+.preview-content h4 {
+  font-family: var(--font-display);
+  color: var(--ink);
+  margin: 1.5em 0 0.5em;
+  line-height: 1.3;
+}
+
+.preview-content h1 { font-size: 2em; }
+.preview-content h2 { font-size: 1.5em; }
+.preview-content h3 { font-size: 1.2em; }
+
+.preview-content p          { margin-bottom: 1.1em; }
+.preview-content strong     { font-weight: 700; }
+.preview-content em         { font-style: italic; }
+
+.preview-content blockquote {
+  border-left: 3px solid var(--paper-edge);
+  padding-left: 16px;
+  color: var(--ink-soft);
+  font-style: italic;
+  margin: 1em 0;
+}
+
+.preview-content code {
+  background: rgba(160,120,60,0.1);
+  padding: 2px 5px;
+  border-radius: 3px;
+  font-size: 0.9em;
+}
+
+.preview-content pre {
+  background: rgba(160,120,60,0.08);
+  padding: 16px;
+  border-radius: 6px;
+  overflow-x: auto;
+  margin: 1em 0;
+}
+
+.preview-content a    { color: #5a6e8a; text-decoration: underline; }
+.preview-content hr   { border: none; border-top: 1px solid var(--paper-edge); margin: 2em 0; }
+.preview-content ul,
+.preview-content ol   { margin: 0.5em 0 1em 1.5em; }
+.preview-content li   { margin-bottom: 0.25em; }
+
+/* ─── Mobile ─────────────────────────────── */
+@media (max-width: 767px) {
+  .paper-wrap     { padding: 16px 12px 80px; }
+  .editor-mount   { padding: 32px 24px 48px; }
+  .editor-surface { font-size: 16px; }
+  .preview-paper  { padding: 32px 24px 48px; }
+}
