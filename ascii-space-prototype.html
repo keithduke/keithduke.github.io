@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>vector — ascii space prototype</title>
+<style>
+  html, body { margin: 0; height: 100%; background: #000; overflow: hidden; overscroll-behavior: none; }
+  * { font-family: 'Courier New', Consolas, monospace; box-sizing: border-box; }
+  #view { position: fixed; inset: 0; }
+  canvas { display: block; }
+  #hud { position: fixed; inset: 0; pointer-events: none; color: #8dffb0; }
+  .panel { position: absolute; border: 1px solid rgba(92,255,138,.35); background: rgba(0,12,6,.45); padding: 10px 14px; }
+  #status { top: 16px; left: 16px; font-size: 12px; line-height: 1.7; letter-spacing: .5px; white-space: pre; }
+  #radarWrap { bottom: 16px; left: 16px; padding: 6px; }
+  #radar { display: block; }
+  #radarLabel { font-size: 10px; color: #3c9a5f; text-align: center; margin-top: 4px; letter-spacing: 1px; }
+  #controls { bottom: 16px; right: 16px; font-size: 11px; color: #4fae72; line-height: 1.8; text-align: right; }
+  #controls b { color: #8dffb0; }
+  #reticle { position: absolute; top: 50%; left: 50%; width: 14px; height: 14px; transform: translate(-50%,-50%); }
+  #reticle:before, #reticle:after { content: ''; position: absolute; background: rgba(141,255,176,.5); }
+  #reticle:before { left: 50%; top: 0; width: 1px; height: 100%; transform: translateX(-50%); }
+  #reticle:after { top: 50%; left: 0; height: 1px; width: 100%; transform: translateY(-50%); }
+  #title { top: 16px; left: 50%; transform: translateX(-50%); font-size: 12px; color: #3c9a5f; letter-spacing: 2px; padding: 6px 16px; }
+  #dirDebug { top: 60px; left: 16px; font-size: 10px; color: #3c9a5f; padding: 6px 10px; }
+  #mouseHint { top: 58px; left: 50%; transform: translateX(-50%); font-size: 11px; color: #8dffb0; padding: 6px 14px; pointer-events: auto; cursor: pointer; }
+
+  .joystick { position: absolute; bottom: 28px; width: 116px; height: 116px; border-radius: 50%;
+    border: 1px solid rgba(92,255,138,.35); background: rgba(0,12,6,.35); pointer-events: auto;
+    touch-action: none; display: none; }
+  .joyMove { left: 24px; }
+  .joyLook { right: 24px; }
+  .stick { position: absolute; top: 50%; left: 50%; width: 46px; height: 46px; margin: -23px;
+    border-radius: 50%; background: rgba(141,255,176,.45); border: 1px solid rgba(141,255,176,.85); }
+  body.touch-mode .joystick { display: block; }
+  body.touch-mode #controls { display: none; }
+  body.touch-mode #mouseHint { display: none; }
+</style>
+</head>
+<body>
+<div id="view"></div>
+<div id="hud">
+  <div class="panel" id="status"></div>
+  <div class="panel" id="dirDebug"></div>
+  <div class="panel" id="title">VECTOR — PROTOTYPE 04</div>
+  <div class="panel" id="mouseHint">click to enable mouse-look</div>
+  <div class="panel" id="radarWrap">
+    <canvas id="radar" width="160" height="160"></canvas>
+    <div id="radarLabel">SCANNER</div>
+  </div>
+  <div class="panel" id="controls">
+    MOUSE look · <b>W/S</b> pitch · <b>A/D</b> yaw · <b>Q/E</b> roll<br>
+    <b>SPACE</b> thrust &nbsp; <b>SHIFT</b> retro
+  </div>
+  <div id="reticle"></div>
+  <div class="joystick joyMove" id="joyMove"><div class="stick"></div></div>
+  <div class="joystick joyLook" id="joyLook"><div class="stick"></div></div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(function () {
+  const isTouch = ('ontouchstart' in window) || navigator.maxTouchPoints > 0;
+  if (isTouch) document.body.classList.add('touch-mode');
+
+  const viewEl = document.getElementById('view');
+  const renderer = new THREE.WebGLRenderer({ antialias: true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setClearColor(0x000000, 1);
+  viewEl.appendChild(renderer.domElement);
+
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(62, window.innerWidth / window.innerHeight, 0.1, 30000);
+
+  window.addEventListener('resize', () => {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+  });
+
+  // ---------- starfield ----------
+  function makeStarfield(count, radius) {
+    const geo = new THREE.BufferGeometry();
+    const positions = new Float32Array(count * 3);
+    for (let i = 0; i < count; i++) {
+      const r = radius * (0.5 + Math.random() * 0.5);
+      const theta = Math.random() * Math.PI * 2;
+      const phi = Math.acos(2 * Math.random() - 1);
+      positions[i * 3] = r * Math.sin(phi) * Math.cos(theta);
+      positions[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta);
+      positions[i * 3 + 2] = r * Math.cos(phi);
+    }
+    geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    const mat = new THREE.PointsMaterial({ color: 0x3c9a5f, size: 1.3, sizeAttenuation: false });
+    return new THREE.Points(geo, mat);
+  }
+  scene.add(makeStarfield(3000, 9000));
+
+  // ---------- simple single-glyph billboard (asteroids, station: no orientation needed) ----------
+  function glyphTexture(char, color) {
+    const size = 128;
+    const cnv = document.createElement('canvas');
+    cnv.width = size; cnv.height = size;
+    const ctx = cnv.getContext('2d');
+    ctx.font = 'bold 92px "Courier New", monospace';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillStyle = color;
+    ctx.shadowColor = color;
+    ctx.shadowBlur = 20;
+    ctx.fillText(char, size / 2, size / 2 + 4);
+    const tex = new THREE.CanvasTexture(cnv);
+    tex.minFilter = THREE.LinearFilter;
+    tex.generateMipmaps = false;
+    return tex;
+  }
+  function makeGlyph(char, color, worldSize) {
+    const mat = new THREE.SpriteMaterial({ map: glyphTexture(char, color), transparent: true, depthWrite: false });
+    const sprite = new THREE.Sprite(mat);
+    sprite.scale.set(worldSize, worldSize, 1);
+    return sprite;
+  }
+
+  // ---------- ships: a real box, each face textured with ascii glyphs, transparent elsewhere ----------
+  function faceTexture(lines, color, aspect) {
+    const charH = 44, pad = 6;
+    const maxLen = Math.max.apply(null, lines.map(l => l.length));
+    let height = lines.length * charH + pad * 2;
+    let width = Math.round(height * aspect);
+    width = Math.max(width, maxLen * (charH * 0.55) + pad * 2);
+    const cnv = document.createElement('canvas');
+    cnv.width = width; cnv.height = height;
+    const ctx = cnv.getContext('2d');
+    // no fill here — canvas starts fully transparent, so only the glyph pixels are opaque
+    ctx.font = 'bold ' + (charH - 10) + 'px "Courier New", monospace';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillStyle = color;
+    ctx.shadowColor = color;
+    ctx.shadowBlur = 10;
+    const totalTextHeight = lines.length * charH;
+    const startY = (height - totalTextHeight) / 2 + charH / 2;
+    lines.forEach((line, i) => ctx.fillText(line, width / 2, startY + i * charH));
+    const tex = new THREE.CanvasTexture(cnv);
+    tex.minFilter = THREE.LinearFilter;
+    tex.generateMipmaps = false;
+    tex.wrapS = THREE.ClampToEdgeWrapping;
+    tex.wrapT = THREE.ClampToEdgeWrapping;
+    return tex;
+  }
+
+  function makeShip(color, dims) {
+    const { w, h, l } = dims;
+    const geo = new THREE.BoxGeometry(w, h, l);
+    const rightTex = faceTexture(['o====[==]====*'], color, l / h);
+    const leftTex  = faceTexture(['*====[==]====o'], color, l / h);
+    const topTex   = faceTexture(['+--+', '|  |', '+--+', '|  |', '+--+'], color, w / l);
+    const botTex   = faceTexture(['|==|', '|  |', '|==|', '|  |', '|==|'], color, w / l);
+    const rearTex  = faceTexture([' .-. ', '<*-*>'], color, w / h);
+    const frontTex = faceTexture(['  ^  ', ' /_\\ '], color, w / h);
+    // BoxGeometry material order: +x, -x, +y, -y, +z, -z
+    const mats = [rightTex, leftTex, topTex, botTex, rearTex, frontTex].map(
+      tex => new THREE.MeshBasicMaterial({ map: tex, alphaTest: 0.35, side: THREE.FrontSide })
+    );
+    const mesh = new THREE.Mesh(geo, mats);
+    return { mesh };
+  }
+
+  // ---------- player ----------
+  const player = {
+    position: new THREE.Vector3(0, 0, 0),
+    velocity: new THREE.Vector3(0, 0, 0),
+    quaternion: new THREE.Quaternion(),
+    ship: makeShip('#8dffb0', { w: 5, h: 2.4, l: 11 })
+  };
+  player.mesh = player.ship.mesh;
+  scene.add(player.mesh);
+
+  // ---------- world objects ----------
+  const world = []; // { mesh, position, velocity, label }
+
+  function spawnAsteroid(pos) {
+    const size = 6 + Math.random() * 9;
+    const mesh = makeGlyph('*', '#5cff8a', size);
+    mesh.position.copy(pos);
+    scene.add(mesh);
+    world.push({
+      mesh, position: pos,
+      velocity: new THREE.Vector3((Math.random() - 0.5) * 1.5, (Math.random() - 0.5) * 1.5, (Math.random() - 0.5) * 1.5),
+      label: 'asteroid'
+    });
+  }
+  for (let i = 0; i < 22; i++) {
+    const pos = new THREE.Vector3((Math.random() - 0.5) * 1600, (Math.random() - 0.5) * 500, (Math.random() - 0.5) * 1600);
+    if (pos.length() < 150) pos.setLength(150 + Math.random() * 200);
+    spawnAsteroid(pos);
+  }
+
+  const stationPos = new THREE.Vector3(420, 30, -260);
+  const stationMesh = makeGlyph('#', '#ffd35c', 30);
+  stationMesh.position.copy(stationPos);
+  scene.add(stationMesh);
+  world.push({ mesh: stationMesh, position: stationPos, velocity: new THREE.Vector3(), label: 'station' });
+
+  // ---------- derelict npc ships ----------
+  const npcShips = [];
+  function spawnNpcShip(pos, quat) {
+    const shipObj = makeShip('#7fd4ff', { w: 5, h: 2.4, l: 11 });
+    shipObj.mesh.position.copy(pos);
+    shipObj.mesh.quaternion.copy(quat);
+    scene.add(shipObj.mesh);
+    const entry = { ship: shipObj, mesh: shipObj.mesh, position: pos, quaternion: quat, velocity: new THREE.Vector3(), label: 'derelict' };
+    npcShips.push(entry);
+    world.push(entry);
+  }
+  const npcPositions = [
+    new THREE.Vector3(120, 10, -180),
+    new THREE.Vector3(-160, -20, -120),
+    new THREE.Vector3(60, 40, 220),
+    new THREE.Vector3(-220, 5, 260)
+  ];
+  npcPositions.forEach(pos => {
+    const quat = new THREE.Quaternion().setFromAxisAngle(
+      new THREE.Vector3(Math.random() - 0.5, 1, Math.random() - 0.5).normalize(),
+      Math.random() * Math.PI * 2
+    );
+    spawnNpcShip(pos, quat);
+  });
+
+  // =========================================================================
+  // INPUT: keyboard (desktop dev testing) + mouse-look (pointer lock) + touch joysticks
+  // =========================================================================
+  const keys = {};
+  window.addEventListener('keydown', e => {
+    keys[e.key.toLowerCase()] = true;
+    if (e.key === ' ') e.preventDefault();
+  });
+  window.addEventListener('keyup', e => { keys[e.key.toLowerCase()] = false; });
+
+  // -- mouse-look via pointer lock --
+  const canvasEl = renderer.domElement;
+  const mouseHint = document.getElementById('mouseHint');
+  const MOUSE_SENS = 0.0022;
+  let mouseYaw = 0, mousePitch = 0;
+
+  function engageLock() { if (document.pointerLockElement !== canvasEl) canvasEl.requestPointerLock(); }
+  canvasEl.addEventListener('click', engageLock);
+  mouseHint.addEventListener('click', engageLock);
+  document.addEventListener('pointerlockchange', () => {
+    mouseHint.style.display = (document.pointerLockElement === canvasEl || document.body.classList.contains('touch-mode')) ? 'none' : 'block';
+  });
+  document.addEventListener('mousemove', e => {
+    if (document.pointerLockElement === canvasEl) {
+      mouseYaw += -e.movementX * MOUSE_SENS;
+      mousePitch += -e.movementY * MOUSE_SENS;
+    }
+  });
+
+  // -- touch joysticks (hand-rolled, no external library) --
+  function createJoystick(containerEl, maxRadius) {
+    const state = { x: 0, y: 0, active: false };
+    const knob = containerEl.querySelector('.stick');
+    let touchId = null;
+
+    function setKnob(dx, dy) { knob.style.transform = 'translate(' + dx + 'px,' + dy + 'px)'; }
+    function apply(clientX, clientY) {
+      const r = containerEl.getBoundingClientRect();
+      const cx = r.left + r.width / 2, cy = r.top + r.height / 2;
+      let dx = clientX - cx, dy = clientY - cy;
+      const dist = Math.hypot(dx, dy);
+      if (dist > maxRadius) { dx = dx / dist * maxRadius; dy = dy / dist * maxRadius; }
+      setKnob(dx, dy);
+      state.x = dx / maxRadius;
+      state.y = dy / maxRadius;
+    }
+    function start(e) {
+      const t = e.changedTouches[0];
+      touchId = t.identifier;
+      state.active = true;
+      apply(t.clientX, t.clientY);
+    }
+    function move(e) {
+      for (const t of e.changedTouches) {
+        if (t.identifier === touchId) { apply(t.clientX, t.clientY); break; }
+      }
+    }
+    function end(e) {
+      for (const t of e.changedTouches) {
+        if (t.identifier === touchId) {
+          state.active = false; state.x = 0; state.y = 0; touchId = null; setKnob(0, 0);
+          break;
+        }
+      }
+    }
+    containerEl.addEventListener('touchstart', start, { passive: true });
+    containerEl.addEventListener('touchmove', move, { passive: true });
+    containerEl.addEventListener('touchend', end);
+    containerEl.addEventListener('touchcancel', end);
+    return state;
+  }
+  const moveStick = createJoystick(document.getElementById('joyMove'), 35); // x: roll, y: thrust
+  const lookStick = createJoystick(document.getElementById('joyLook'), 35); // x: yaw, y: pitch
+
+  // =========================================================================
+  // FLIGHT MODEL — "flight assist" style: thrust redirects velocity toward
+  // your facing direction (point-and-go), coasting bleeds off speed gradually
+  // instead of drifting forever. Pure momentum-only Newtonian was correct but
+  // very hard to aim; this trades a little realism for controllability.
+  // =========================================================================
+  const ROT_RATE = 1.3;        // rad/s, keyboard & joystick rate control
+  const THRUST_ACCEL = 26;     // units/s^2 at full throttle
+  const RETRO_FACTOR = 0.6;    // retro thrust is weaker than main engine
+  const MAX_SPEED = 140;       // speed cap so things stay readable/controllable
+  const LINEAR_DAMPING = 0.85; // fraction of speed retained per second while coasting
+  const ALIGN_RATE = 3.0;      // how fast off-axis drift bleeds off while thrusting
+
+  const forward = new THREE.Vector3();
+  const up = new THREE.Vector3();
+  const right = new THREE.Vector3();
+  const tmpQ = new THREE.Quaternion();
+  const AXIS_X = new THREE.Vector3(1, 0, 0);
+  const AXIS_Y = new THREE.Vector3(0, 1, 0);
+  const AXIS_Z = new THREE.Vector3(0, 0, 1);
+  const alignedVel = new THREE.Vector3();
+  const drift = new THREE.Vector3();
+
+  function updatePlayer(dt) {
+    let pitch = 0, yaw = 0, roll = 0, thrust = 0;
+
+    // keyboard — kept for desktop dev testing
+    if (keys['w']) pitch -= 1;
+    if (keys['s']) pitch += 1;
+    if (keys['a']) yaw += 1;
+    if (keys['d']) yaw -= 1;
+    if (keys['q']) roll += 1;
+    if (keys['e']) roll -= 1;
+    if (keys[' ']) thrust += 1;
+    if (keys['shift']) thrust -= RETRO_FACTOR;
+
+    // touch joysticks (analog, additive with keyboard)
+    if (moveStick.active) { roll += moveStick.x; thrust += -moveStick.y; }
+    if (lookStick.active) { yaw += -lookStick.x; pitch += lookStick.y; }
+
+    thrust = Math.max(-1, Math.min(1, thrust));
+
+    // rate-based rotation from keys/joystick
+    if (pitch) { tmpQ.setFromAxisAngle(AXIS_X, pitch * ROT_RATE * dt); player.quaternion.multiply(tmpQ); }
+    if (yaw)   { tmpQ.setFromAxisAngle(AXIS_Y, yaw   * ROT_RATE * dt); player.quaternion.multiply(tmpQ); }
+    if (roll)  { tmpQ.setFromAxisAngle(AXIS_Z, roll  * ROT_RATE * dt); player.quaternion.multiply(tmpQ); }
+
+    // mouse-look — each call is already a discrete per-frame angle, not a rate
+    if (mouseYaw)   { tmpQ.setFromAxisAngle(AXIS_Y, mouseYaw);   player.quaternion.multiply(tmpQ); mouseYaw = 0; }
+    if (mousePitch) { tmpQ.setFromAxisAngle(AXIS_X, mousePitch); player.quaternion.multiply(tmpQ); mousePitch = 0; }
+
+    forward.set(0, 0, -1).applyQuaternion(player.quaternion);
+    up.set(0, 1, 0).applyQuaternion(player.quaternion);
+    right.set(1, 0, 0).applyQuaternion(player.quaternion);
+
+    if (thrust !== 0) {
+      player.velocity.addScaledVector(forward, THRUST_ACCEL * thrust * dt);
+      // "align and go": thrusting bleeds off velocity that isn't pointed where you're facing
+      const along = player.velocity.dot(forward);
+      alignedVel.copy(forward).multiplyScalar(along);
+      drift.copy(player.velocity).sub(alignedVel);
+      drift.multiplyScalar(Math.max(0, 1 - ALIGN_RATE * dt));
+      player.velocity.copy(alignedVel).add(drift);
+    } else {
+      // flight-assist idle drag: coasting bleeds off instead of drifting forever
+      player.velocity.multiplyScalar(Math.pow(LINEAR_DAMPING, dt));
+    }
+
+    if (player.velocity.length() > MAX_SPEED) player.velocity.setLength(MAX_SPEED);
+
+    player.position.addScaledVector(player.velocity, dt);
+    player.mesh.position.copy(player.position);
+    player.mesh.quaternion.copy(player.quaternion);
+  }
+
+  // ---------- chase camera ----------
+  const camOffset = new THREE.Vector3();
+  const camTargetPos = new THREE.Vector3();
+
+  function updateCamera(dt) {
+    camOffset.set(0, 6, 24).applyQuaternion(player.quaternion);
+    camTargetPos.copy(player.position).add(camOffset);
+    camera.position.lerp(camTargetPos, 1 - Math.pow(0.001, dt));
+    camera.quaternion.slerp(player.quaternion, 1 - Math.pow(0.0006, dt));
+  }
+
+  // ---------- radar (lollipop, classic Elite style) ----------
+  const radarCnv = document.getElementById('radar');
+  const rctx = radarCnv.getContext('2d');
+  const RADAR_RANGE = 650;
+  const relPos = new THREE.Vector3();
+
+  function drawRadar() {
+    const w = radarCnv.width, h = radarCnv.height, cx = w / 2, cy = h / 2, R = w / 2 - 8;
+    rctx.clearRect(0, 0, w, h);
+    rctx.strokeStyle = 'rgba(92,255,138,.35)';
+    rctx.lineWidth = 1;
+    rctx.beginPath(); rctx.arc(cx, cy, R, 0, Math.PI * 2); rctx.stroke();
+    rctx.beginPath();
+    rctx.moveTo(cx - R, cy); rctx.lineTo(cx + R, cy);
+    rctx.moveTo(cx, cy - R); rctx.lineTo(cx, cy + R);
+    rctx.stroke();
+    rctx.fillStyle = '#8dffb0';
+    rctx.beginPath(); rctx.arc(cx, cy, 2, 0, Math.PI * 2); rctx.fill();
+
+    world.forEach(obj => {
+      relPos.copy(obj.position).sub(player.position);
+      const dist = relPos.length();
+      if (dist > RADAR_RANGE) return;
+      const scale = R / RADAR_RANGE;
+      const px = cx + relPos.dot(right) * scale;
+      const py = cy - relPos.dot(forward) * scale;
+      const stalk = relPos.dot(up) * scale;
+      const color = obj.label === 'station' ? '#ffd35c' : obj.label === 'derelict' ? '#7fd4ff' : '#5cff8a';
+
+      rctx.strokeStyle = color;
+      rctx.beginPath(); rctx.moveTo(px, py); rctx.lineTo(px, py - stalk); rctx.stroke();
+      rctx.fillStyle = 'rgba(141,255,176,.4)';
+      rctx.beginPath(); rctx.arc(px, py, 1.5, 0, Math.PI * 2); rctx.fill();
+      rctx.fillStyle = color;
+      rctx.beginPath(); rctx.arc(px, py - stalk, 2.3, 0, Math.PI * 2); rctx.fill();
+    });
+  }
+
+  // ---------- hud ----------
+  const statusEl = document.getElementById('status');
+  const dirDebugEl = document.getElementById('dirDebug');
+  function updateHUD() {
+    const speed = player.velocity.length();
+    const contacts = world.filter(o => o.position.distanceTo(player.position) < RADAR_RANGE).length;
+    statusEl.textContent =
+      'VEL       ' + speed.toFixed(1) + ' / ' + MAX_SPEED + ' u/s\n' +
+      'POS       ' + player.position.x.toFixed(0) + ', ' + player.position.y.toFixed(0) + ', ' + player.position.z.toFixed(0) + '\n' +
+      'CONTACTS  ' + contacts;
+
+    if (npcShips.length) {
+      const nearest = npcShips.slice().sort((a, b) => a.position.distanceTo(player.position) - b.position.distanceTo(player.position))[0];
+      dirDebugEl.textContent = 'NEAREST DERELICT  ' + nearest.position.distanceTo(player.position).toFixed(0) + 'u';
+    }
+  }
+
+  function updateWorld(dt) {
+    world.forEach(o => {
+      if (o.label === 'asteroid') {
+        o.position.addScaledVector(o.velocity, dt);
+        o.mesh.position.copy(o.position);
+      }
+    });
+  }
+
+  // ---------- loop ----------
+  let last = performance.now();
+  function loop(now) {
+    const dt = Math.min((now - last) / 1000, 0.05);
+    last = now;
+    updatePlayer(dt);
+    updateWorld(dt);
+    updateCamera(dt);
+    drawRadar();
+    updateHUD();
+    renderer.render(scene, camera);
+    requestAnimationFrame(loop);
+  }
+  requestAnimationFrame(loop);
+})();
+</script>
+</body>
+</html>
