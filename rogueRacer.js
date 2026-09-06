@@ -695,6 +695,11 @@ class Racer {
         const angleOnCurve = Math.random() * (Math.PI / 2);
         const centerX = type === "leftTurn" ? -curveRadius : curveRadius;
         const centerZ = -curveRadius;
+        // Left turns curve away from their center in +x; right turns curve
+        // away from their center in -x. The x-offset below must flip sign
+        // for right turns or trees end up mirrored past the road, well
+        // outside this geomorph's tile and into the next one's roadway.
+        const curveDirection = type === "leftTurn" ? 1 : -1;
 
         let placementRadius;
         if (Math.random() > 0.4) {
@@ -713,7 +718,8 @@ class Racer {
           );
         }
 
-        const x = centerX + placementRadius * Math.cos(angleOnCurve);
+        const x =
+          centerX + curveDirection * placementRadius * Math.cos(angleOnCurve);
         const z = centerZ + placementRadius * Math.sin(angleOnCurve);
         treePosition = new THREE.Vector3(x, 0, z);
       } else {
@@ -1420,13 +1426,13 @@ window.addEventListener("load", () => {
     console.error("THREE.js or NippleJS is not loaded!");
     return;
   }
-  new Racer();
+  window.racerInstance = new Racer();
 });
 
 window.addEventListener(
   "resize",
   () => {
-    const game = window.racerInstance; // Assuming you might store instance globally for easy access
+    const game = window.racerInstance;
     const canvas = document.getElementById("gameCanvas");
     const size = Math.min(window.innerWidth, window.innerHeight);
 
@@ -1439,18 +1445,9 @@ window.addEventListener(
       game.renderer.setSize(size, size);
       game.camera.aspect = 1; // Canvas is square
       game.camera.updateProjectionMatrix();
-    } else {
-      // Fallback if game instance not available yet or renderer/camera not setup
-      const renderer = new THREE.WebGLRenderer({
-        canvas: document.getElementById("gameCanvas"),
-      });
-      if (renderer) renderer.setSize(size, size);
-      const camera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000);
-      if (camera) {
-        camera.aspect = 1;
-        camera.updateProjectionMatrix();
-      }
     }
+    // If the game instance isn't ready yet, the "load" handler above will
+    // create it at the current window size, so there's nothing to do here.
   },
   false
 );
