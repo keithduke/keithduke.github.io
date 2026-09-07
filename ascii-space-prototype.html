@@ -12,7 +12,7 @@
   #hud { position: fixed; inset: 0; pointer-events: none; color: #8dffb0; }
   .panel { position: absolute; border: 1px solid rgba(92,255,138,.35); background: rgba(0,12,6,.45); padding: 10px 14px; }
   #status { top: 16px; left: 16px; font-size: 12px; line-height: 1.7; letter-spacing: .5px; white-space: pre; }
-  #radarWrap { bottom: 16px; left: 16px; padding: 6px; }
+  #radarWrap { top: 16px; right: 16px; padding: 6px; }
   #radar { display: block; }
   #radarLabel { font-size: 10px; color: #3c9a5f; text-align: center; margin-top: 4px; letter-spacing: 1px; }
   #controls { bottom: 16px; right: 16px; font-size: 11px; color: #4fae72; line-height: 1.8; text-align: right; }
@@ -21,8 +21,6 @@
   #reticle:before, #reticle:after { content: ''; position: absolute; background: rgba(141,255,176,.5); }
   #reticle:before { left: 50%; top: 0; width: 1px; height: 100%; transform: translateX(-50%); }
   #reticle:after { top: 50%; left: 0; height: 1px; width: 100%; transform: translateY(-50%); }
-  #title { top: 16px; left: 50%; transform: translateX(-50%); font-size: 12px; color: #3c9a5f; letter-spacing: 2px; padding: 6px 16px; }
-  #dirDebug { top: 60px; left: 16px; font-size: 10px; color: #3c9a5f; padding: 6px 10px; }
   #mouseHint { top: 58px; left: 50%; transform: translateX(-50%); font-size: 11px; color: #8dffb0; padding: 6px 14px; pointer-events: auto; cursor: pointer; }
 
   .joystick { position: absolute; bottom: 28px; width: 116px; height: 116px; border-radius: 50%;
@@ -41,8 +39,6 @@
 <div id="view"></div>
 <div id="hud">
   <div class="panel" id="status"></div>
-  <div class="panel" id="dirDebug"></div>
-  <div class="panel" id="title">VECTOR — PROTOTYPE 04</div>
   <div class="panel" id="mouseHint">click to enable mouse-look</div>
   <div class="panel" id="radarWrap">
     <canvas id="radar" width="160" height="160"></canvas>
@@ -382,7 +378,7 @@
   const camTargetPos = new THREE.Vector3();
 
   function updateCamera(dt) {
-    camOffset.set(0, 6, 24).applyQuaternion(player.quaternion);
+    camOffset.set(0, 10, 46).applyQuaternion(player.quaternion);
     camTargetPos.copy(player.position).add(camOffset);
     camera.position.lerp(camTargetPos, 1 - Math.pow(0.001, dt));
     camera.quaternion.slerp(player.quaternion, 1 - Math.pow(0.0006, dt));
@@ -428,19 +424,19 @@
 
   // ---------- hud ----------
   const statusEl = document.getElementById('status');
-  const dirDebugEl = document.getElementById('dirDebug');
   function updateHUD() {
     const speed = player.velocity.length();
     const contacts = world.filter(o => o.position.distanceTo(player.position) < RADAR_RANGE).length;
-    statusEl.textContent =
+    let text =
       'VEL       ' + speed.toFixed(1) + ' / ' + MAX_SPEED + ' u/s\n' +
       'POS       ' + player.position.x.toFixed(0) + ', ' + player.position.y.toFixed(0) + ', ' + player.position.z.toFixed(0) + '\n' +
       'CONTACTS  ' + contacts;
 
     if (npcShips.length) {
       const nearest = npcShips.slice().sort((a, b) => a.position.distanceTo(player.position) - b.position.distanceTo(player.position))[0];
-      dirDebugEl.textContent = 'NEAREST DERELICT  ' + nearest.position.distanceTo(player.position).toFixed(0) + 'u';
+      text += '\nNEAREST DERELICT  ' + nearest.position.distanceTo(player.position).toFixed(0) + 'u';
     }
+    statusEl.textContent = text;
   }
 
   function updateWorld(dt) {
