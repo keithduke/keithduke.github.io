@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Brew Log — coffee recipe timer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="brew-log.css">
+</head>
+<body>
+
+<!-- Registered before the app module loads, so it survives a module load/parse
+     failure too (a 404 or a typo), not just a runtime error inside the app. -->
+<script>
+  window.addEventListener('error', function(e){
+    if(window.console) console.error('Brew Log error:', e.error || e.message);
+    var banner = document.getElementById('errorBanner');
+    if(!banner){
+      banner = document.createElement('div');
+      banner.id = 'errorBanner';
+      banner.style.cssText = 'position:fixed;bottom:0;left:0;right:0;background:#B4553A;color:#fff;' +
+        'padding:0.75rem 1rem;font-family:sans-serif;font-size:0.85rem;z-index:9999;line-height:1.4;';
+      banner.textContent = 'Brew Log hit an error: ' + (e.message || 'unknown error') +
+        '. Open the browser console (or reload the page) for details.';
+      document.body.appendChild(banner);
+    }
+  });
+</script>
+
+<div id="app">
+
+  <header class="topbar">
+    <button id="backBtn" class="icon-btn" hidden aria-label="Back">←</button>
+    <div class="brand">
+      <svg class="brand-mark" width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M4 4 L20 4 L14 20 L10 20 Z" stroke="#C98A3D" stroke-width="1.4" stroke-linejoin="round"/>
+      </svg>
+      <span class="topbar-title" id="titleText">Brew Log</span>
+    </div>
+    <button id="newRecipeBtn" class="btn btn-primary">New recipe</button>
+  </header>
+
+  <!-- ===================== LIST VIEW ===================== -->
+  <section id="view-list">
+    <p class="view-intro">Recipes for whatever you're pulling today, with a timer built in.</p>
+    <div class="backup-row">
+      <button class="btn btn-ghost" id="exportBtn">Export recipes</button>
+      <button class="btn btn-ghost" id="importBtn">Import recipes</button>
+      <input type="file" id="importFileInput" accept="application/json,.json" hidden>
+    </div>
+    <div id="recipeList"></div>
+    <div id="emptyState" class="empty-state" hidden>
+      <p>No recipes yet. Build one and get brewing.</p>
+      <button class="btn btn-primary" id="emptyNewBtn">New recipe</button>
+    </div>
+  </section>
+
+  <!-- ===================== DETAIL VIEW ===================== -->
+  <section id="view-detail" hidden>
+    <h1 class="detail-name" id="detailName"></h1>
+    <div class="detail-meta" id="detailMeta"></div>
+    <div class="timer-specs" id="detailSpecs"></div>
+
+    <div class="detail-section" id="detailPrepSection" hidden>
+      <h2>Before you start</h2>
+      <ol class="prep-view-list" id="detailPrepList"></ol>
+    </div>
+
+    <div class="detail-section">
+      <h2>Stages</h2>
+      <div id="detailStageList"></div>
+    </div>
+
+    <div class="detail-section" id="detailNotesSection" hidden>
+      <h2>Notes</h2>
+      <p class="detail-notes" id="detailNotes"></p>
+    </div>
+
+    <div class="detail-footer">
+      <button class="btn btn-ghost btn-block" id="detailDuplicateBtn">Duplicate recipe</button>
+      <div class="footer-actions">
+        <button class="btn" id="detailEditBtn">Edit</button>
+        <button class="btn btn-primary" id="detailStartBtn">Start brew</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== EDITOR VIEW ===================== -->
+  <section id="view-editor" hidden>
+    <div class="field">
+      <label for="recipeNameInput">Recipe name</label>
+      <input type="text" id="recipeNameInput" placeholder="e.g. V60, four pour">
+    </div>
+    <div class="field">
+      <label for="recipeMethodInput">Method</label>
+      <input type="text" id="recipeMethodInput" placeholder="e.g. pour-over">
+    </div>
+
+    <div class="stages-heading">
+      <h2>Ingredients &amp; specs</h2>
+    </div>
+    <div class="field-grid">
+      <div class="field">
+        <label for="doseInput">Coffee dose (g)</label>
+        <input type="text" id="doseInput" inputmode="decimal" placeholder="18">
+      </div>
+      <div class="field">
+        <label for="waterInput">Water total (g)</label>
+        <input type="text" id="waterInput" inputmode="decimal" placeholder="300">
+      </div>
+      <div class="field">
+        <label for="tempValueInput">Water temperature</label>
+        <div class="temp-row">
+          <input type="text" id="tempValueInput" inputmode="decimal" placeholder="94">
+          <select id="tempUnitSelect" aria-label="Temperature unit">
+            <option value="C">°C</option>
+            <option value="F">°F</option>
+          </select>
+        </div>
+      </div>
+      <div class="field">
+        <label for="grindInput">Grind size</label>
+        <input type="text" id="grindInput" placeholder="medium-fine">
+      </div>
+    </div>
+    <div class="ratio-display" id="ratioDisplay"></div>
+    <div class="field">
+      <label for="equipmentInput">Equipment / filter</label>
+      <input type="text" id="equipmentInput" placeholder="e.g. Hario V60 02, bleached paper filter">
+    </div>
+
+    <div class="stages-heading">
+      <h2>Prep, before you start</h2>
+    </div>
+    <div id="prepList"></div>
+    <button class="btn add-prep-btn" id="addPrepBtn">+ Add prep step</button>
+
+    <div class="stages-heading">
+      <h2>Stages</h2>
+    </div>
+    <div id="stageList"></div>
+    <button class="btn add-stage-btn" id="addStageBtn">+ Add stage</button>
+
+    <div class="stages-heading">
+      <h2>Notes</h2>
+    </div>
+    <div class="field">
+      <label for="notesInput" class="sr-only">Notes</label>
+      <textarea id="notesInput" placeholder="Tasting notes, roast info, anything worth remembering next time"></textarea>
+    </div>
+
+    <div class="editor-footer">
+      <button class="btn btn-danger" id="deleteRecipeBtn" hidden>Delete</button>
+      <button class="btn btn-primary" id="saveRecipeBtn">Save recipe</button>
+    </div>
+  </section>
+
+</div>
+
+<!-- ===================== TIMER MODAL ===================== -->
+<div id="timerModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="timerModalTitle" hidden>
+  <div class="modal-panel">
+    <div class="modal-topbar">
+      <button id="timerCloseBtn" class="icon-btn" aria-label="Close timer, back to recipe">×</button>
+      <div class="modal-title" id="timerModalTitle">Timer</div>
+    </div>
+
+    <div id="view-timer">
+      <div class="timer-prep" id="timerPrep" hidden>
+        <h3>Before you start</h3>
+        <div id="timerPrepList"></div>
+      </div>
+      <div class="timer-specs" id="timerSpecs"></div>
+      <div class="timer-stage-index" id="timerStageIndex"></div>
+      <h2 class="timer-stage-name" id="timerStageName"></h2>
+      <div class="timer-digits" id="timerDigits">0:00</div>
+      <div class="timer-target" id="timerTarget"></div>
+      <div class="timer-note" id="timerNote"></div>
+
+      <div class="timeline" id="timeline"></div>
+      <div class="timer-progress-labels">
+        <span id="timerElapsed">0:00</span>
+        <span id="timerTotal">0:00</span>
+      </div>
+
+      <div class="timer-next" id="timerNext"></div>
+
+      <div class="timer-controls">
+        <button class="btn btn-primary" id="startPauseBtn">Start</button>
+        <button class="btn" id="nextStageBtn">Next stage</button>
+        <button class="btn" id="resetBtn">Reset</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="module" src="js/main.js"></script>
+</body>
+</html>
